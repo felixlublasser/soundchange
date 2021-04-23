@@ -1,29 +1,59 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+    <component
+      :is="currentView"
+      v-bind="{ project }"
+      @navigateTo="navigateTo"
+    />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import HelloWorld from './components/HelloWorld.vue';
+import HomeView from '@/views/Home.vue';
+import ProjectView from '@/views/Project.vue';
+import AppView from '@/models/appView';
+import Project from '@/models/project';
+import { ipcRenderer } from 'electron';
+import { isSuccess } from './lib/result';
 
 @Component({
   components: {
-    HelloWorld,
+    HomeView,
+    ProjectView
   },
 })
-export default class App extends Vue {}
+export default class App extends Vue {
+  currentView: AppView = AppView.HOME
+  project: Project = new Project() 
+
+  navigateTo(view: AppView): void {
+    this.currentView = view
+  }
+
+  async loadProject(filePath: string): Promise<void> {
+    const json = await ipcRenderer.invoke('loadProject', filePath)
+    const loadResult = Project.fromJSON(json)
+    if (isSuccess(loadResult)) {
+      this.project = loadResult
+    } else {
+      throw loadResult
+    }
+  }
+}
 </script>
 
 <style lang="scss">
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  background-color: #111;
+  height: 100%;
 }
 </style>

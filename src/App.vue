@@ -25,7 +25,13 @@ import { isSuccess } from './lib/result';
 })
 export default class App extends Vue {
   currentView: AppView = AppView.HOME
-  project: Project = new Project() 
+  project: Project = new Project()
+
+  created(): void {
+    ipcRenderer.on('openedProject', (_event, json) => {
+      this.mountProject(json)
+    })
+  }
 
   navigateTo(view: AppView): void {
     this.currentView = view
@@ -33,12 +39,17 @@ export default class App extends Vue {
 
   async loadProject(filePath: string): Promise<void> {
     const json = await ipcRenderer.invoke('loadProject', filePath)
+    this.mountProject(json)
+  }
+
+  mountProject(json: unknown): void {
     const loadResult = Project.fromJSON(json)
     if (isSuccess(loadResult)) {
       this.project = loadResult
     } else {
       throw loadResult
     }
+    this.navigateTo(AppView.PROJECT)
   }
 }
 </script>
@@ -55,5 +66,6 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
   background-color: #111;
   height: 100%;
+  color: #eee;
 }
 </style>

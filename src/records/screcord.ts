@@ -2,12 +2,8 @@ import { Result } from '@/lib/result'
 import Ajv, { JSONSchemaType } from 'ajv'
 
 export default class SCRecord {
-  static get schemaFile(): string {
-    return ""
-  }
-
   static get schema(): unknown {
-    return require(this.schemaFile)
+    return {}
   }
 
   static fromJSON<T extends typeof SCRecord>(json: unknown): Result<InstanceType<T>> {

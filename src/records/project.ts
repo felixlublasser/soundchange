@@ -4,7 +4,7 @@ export default class ProjectRecord extends SCRecord {
   version = '';
   filePath = '';
 
-  static get schemaFile(): string {
-    return "@/schemas/project.json"
+  static get schema(): string {
+    return require("@/schemas/project.json")
   }
 }

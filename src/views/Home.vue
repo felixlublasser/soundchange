@@ -1,7 +1,8 @@
 <template>
   <div>
-    <button @click='openNewProject'><h2>Open New Project</h2></button>
-    <h2>Open Recent Projects</h2>
+    <button @click='createNewProject'><h2>Create New Project</h2></button>
+    <button @click="loadExistingProject"><h2>Load Existing Project</h2></button>
+    <h2>Recent Projects</h2>
     <button v-for="(project, i) in recentProjects" :key="i">
       {{ project }}
     </button>
@@ -21,8 +22,12 @@ export default class HomeView extends Vue {
     this.recentProjects = await ipcRenderer.invoke('getRecentProjects')
   }
 
-  openNewProject(): void {
+  createNewProject(): void {
     this.$emit('navigateTo', AppView.PROJECT)
+  }
+
+  loadExistingProject(): void {
+    ipcRenderer.send('dialogOpenProject')
   }
 }
 </script>

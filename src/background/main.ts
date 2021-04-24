@@ -1,9 +1,10 @@
 'use strict'
 
-import { app, protocol, BrowserWindow, ipcMain, Menu } from 'electron'
+import { app, protocol, BrowserWindow } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
-import File from './file'
+import { defineMenu } from './menu'
+import { defineEndpoints } from './endpoints'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -39,6 +40,8 @@ export const runBackgroundProcess = function (): void {
       // Load the index.html when not in development
       win.loadURL('app://./index.html')
     }
+
+    return win
   }
 
   // Quit when all windows are closed.
@@ -50,10 +53,12 @@ export const runBackgroundProcess = function (): void {
     }
   })
 
-  app.on('activate', () => {
+  app.on('activate', async () => {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createWindow()
+    }
   })
 
   // This method will be called when Electron has finished
@@ -86,66 +91,6 @@ export const runBackgroundProcess = function (): void {
     }
   }
 
-  const isMac = process.platform === 'darwin'
-
-  Menu.setApplicationMenu(Menu.buildFromTemplate([
-    ...(isMac ? [{
-      label: app.name,
-      submenu: [
-        { role: "about" as const },
-        { type: 'separator' as const },
-        { role: 'services' as const },
-        { type: 'separator' as const },
-        { role: 'hide' as const },
-        { role: 'hideOthers' as const },
-        { role: 'unhide' as const },
-        { type: 'separator' as const },
-        { role: 'quit' as const }
-      ]
-    }] : []),
-    {
-      label: 'File',
-      submenu: [
-        {
-          label: 'Save as...'
-        },
-        {
-          label: 'Save'
-        }
-      ]
-    },
-    {
-      label: 'Edit',
-      submenu: [
-        // { role: 'undo' },
-        // { role: 'redo' },
-        // { type: 'separator' },
-        { role: 'cut' },
-        { role: 'copy' },
-        { role: 'paste' }
-      ]
-    }
-  ]))
-
-  ipcMain.handle('getRecentProjects', async () => {
-    return (await new File(`${app.getPath('userData')}/recentProjects`).load({ ignoreNotFound: true })).parsed
-  })
-
-  ipcMain.handle('addToRecentProjects', async (_event, filePath: string) => {
-    console.log('got request')
-    const userSettings = await new File(`${app.getPath('userData')}/recentProjects`).load({ ignoreNotFound: true })
-    if (!userSettings.parsed) {
-      userSettings.parsed = { recentProjects: [filePath] }
-    } else if (!Array.isArray(userSettings.parsed.recentProjects)) {
-      userSettings.parsed.recentProjects = [filePath]
-    } else {
-      userSettings.parsed.recentProjects = [...new Set([filePath, ...userSettings.parsed.recentProjects])]
-    }
-    return userSettings.save()
-  })
-
-  ipcMain.handle('loadProject', async (_event, filePath: string) => {
-    const file = await new File(filePath).load()
-    return file.parsed
-  })
+  defineMenu()
+  defineEndpoints()
 }

@@ -1,1 +1,1 @@
-{"version":"0.0.1","filePath":"~/code/soundchange/test-proj.sch"}
+{"version":"0.0.1","filePath":"/Users/felixlublasser/code/soundchange/test-proj.sch"}

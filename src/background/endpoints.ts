@@ -1,5 +1,6 @@
 import { app, dialog, ipcMain } from 'electron'
 import File from './file'
+import Json from '../lib/json'
 
 export const defineEndpoints = ():void => {
   ipcMain.handle('getRecentProjects', async () => {
@@ -28,7 +29,13 @@ export const defineEndpoints = ():void => {
     const dialogResult = await dialog.showOpenDialog({})
     if (!dialogResult.canceled) {
       const file = await new File(dialogResult.filePaths[0]).load()
-      event.sender.send('openedProject', file.parsed)
+      event.sender.send('openedProject', file.parsed, file.filePath)
     }
+  })
+
+  ipcMain.on('saveProject', async (_event, object: Json, filePath: string) => {
+    const file = new File(filePath)
+    file.parsed = object
+    file.save()
   })
 }

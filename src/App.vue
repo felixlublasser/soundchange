@@ -28,8 +28,17 @@ export default class App extends Vue {
   project: Project = new Project()
 
   created(): void {
-    ipcRenderer.on('openedProject', (_event, json) => {
-      this.mountProject(json)
+    ipcRenderer.on('openedProject', (_event, json, filePath) => {
+      this.mountProject(json, filePath)
+    })
+
+    ipcRenderer.on('getProjectDataToSave', () => {
+      this.saveProject()
+    })
+
+    ipcRenderer.on('getProjectDataToSaveAs', (_event, filePath) => {
+      this.project.filePath = filePath
+      this.saveProject()
     })
   }
 
@@ -39,17 +48,25 @@ export default class App extends Vue {
 
   async loadProject(filePath: string): Promise<void> {
     const json = await ipcRenderer.invoke('loadProject', filePath)
-    this.mountProject(json)
+    this.mountProject(json, filePath)
   }
 
-  mountProject(json: unknown): void {
-    const loadResult = Project.fromJSON(json)
+  mountProject(json: unknown, filePath: string): void {
+    const loadResult = Project.fromJSON(json, filePath)
     if (isSuccess(loadResult)) {
       this.project = loadResult
     } else {
       throw loadResult
     }
     this.navigateTo(AppView.PROJECT)
+  }
+
+  saveProject(): void {
+    if (this.project.filePath) {
+      throw new Error('A project without a file path cannot be saved')
+    } else {
+      ipcRenderer.send('saveProject', this.project.toRecord(), this.project.filePath)
+    }
   }
 }
 </script>

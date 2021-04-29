@@ -2,8 +2,7 @@
   "title": "ProjectRecord",
   "type": "object",
   "properties": {
-    "version": { "type": "string" },
-    "filePath": { "type": "string" }
+    "version": { "type": "string" }
   },
   "required": ["version", "filePath"]
 }

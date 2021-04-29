@@ -1,4 +1,4 @@
-import { app, Menu } from 'electron'
+import { app, dialog, Menu } from 'electron'
 
 const isMac = process.platform === 'darwin'
 
@@ -22,10 +22,21 @@ export const defineMenu = ():void => {
       label: 'File',
       submenu: [
         {
-          label: 'Save as...'
+          label: 'Save as...',
+          async click(_menuItem, browserWindow) {
+            const dialogResult = await dialog.showSaveDialog({})
+            if (!dialogResult.canceled && browserWindow && browserWindow.webContents) {
+              browserWindow.webContents.send('getProjectDataToSaveAs', dialogResult.filePath)
+            }
+          }
         },
         {
-          label: 'Save'
+          label: 'Save',
+          click(_menuItem, browserWindow) {
+            if (browserWindow && browserWindow.webContents) {
+              browserWindow.webContents.send('getProjectDataToSave')
+            }
+          }
         }
       ]
     },

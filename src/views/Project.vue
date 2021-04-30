@@ -1,6 +1,6 @@
 <template>
   <div>
-    Project this is
+    {{ JSON.stringify(project) }}
   </div>
 </template>
 

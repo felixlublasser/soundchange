@@ -62,7 +62,7 @@ export default class App extends Vue {
   }
 
   saveProject(): void {
-    if (this.project.filePath) {
+    if (!this.project.filePath) {
       throw new Error('A project without a file path cannot be saved')
     } else {
       ipcRenderer.send('saveProject', this.project.toRecord(), this.project.filePath)

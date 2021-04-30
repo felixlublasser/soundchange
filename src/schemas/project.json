@@ -4,5 +4,5 @@
   "properties": {
     "version": { "type": "string" }
   },
-  "required": ["version", "filePath"]
+  "required": ["version"]
 }

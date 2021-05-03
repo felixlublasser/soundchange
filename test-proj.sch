@@ -1,1 +1,1 @@
-{"version":"0.0.1","protoLanguage":{"name":"Old Saxolian"}}
+{"version":"0.0.1","protoLanguageId":"1","languageStages":[{"id":"1", "name":"Old Saxolian","ancestorId":null,"branchIds":[]}]}

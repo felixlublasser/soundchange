@@ -1,0 +1,35 @@
+{
+  "title": "Store",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "string"
+    },
+    "languageStages": {
+      "type": "array",
+      "items": {
+        "title": "LanguageStage",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "ancestorId": {
+            "type": ["string", "null"]
+          },
+          "branchIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": ["id", "name","ancestorId","branchIds"]
+      }
+    }
+  },
+  "required": ["version", "languageStages"]
+}

@@ -15,7 +15,8 @@ import ProjectView from '@/views/Project.vue';
 import AppView from '@/models/appView';
 import Project from '@/models/project';
 import { ipcRenderer } from 'electron';
-import { isSuccess } from './lib/result';
+import { isSuccess, throwUnless } from './lib/result';
+import Store from '@/records/store'
 
 @Component({
   components: {
@@ -52,7 +53,8 @@ export default class App extends Vue {
   }
 
   mountProject(json: unknown, filePath: string): void {
-    const loadResult = Project.fromJSON(json, filePath)
+    const store = throwUnless(Store.fromJSON(json))
+    const loadResult = Project.fromStore(store, filePath)
     if (isSuccess(loadResult)) {
       this.project = loadResult
     } else {
@@ -62,11 +64,11 @@ export default class App extends Vue {
   }
 
   saveProject(): void {
-    if (!this.project.filePath) {
-      throw new Error('A project without a file path cannot be saved')
-    } else {
-      ipcRenderer.send('saveProject', this.project.toRecord(), this.project.filePath)
-    }
+    // if (!this.project.filePath) {
+    //   throw new Error('A project without a file path cannot be saved')
+    // } else {
+    //   ipcRenderer.send('saveProject', this.project.toRecord(), this.project.filePath)
+    // }
   }
 }
 </script>

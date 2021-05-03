@@ -15,3 +15,11 @@ export function throwUnless<T>(result: Result<T>): T {
     return result
   }
 }
+
+export function resultify<T>(func:() => T): Result<T> {
+  try {
+    return func()
+  } catch (e) {
+    return e
+  }
+}

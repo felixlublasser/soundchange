@@ -1,24 +1,32 @@
-import LanguageStageRecord from '@/records/languageStage'
-import { Result, isError } from '@/lib/result'
+// import LanguageStageRecord from '@/records/languageStage'
+import Savable from '@/lib/savable'
+import Store from '@/records/store'
+import { Result, resultify, throwUnless } from '@/lib/result';
 
-export default class LanguageStage {
+export default class LanguageStage extends Savable {
   name: string | null = null;
+  ancestor: LanguageStage | null = null;
+  branches: LanguageStage[] = [];
 
-  static fromJSON(json: unknown): Result<LanguageStage> {
-    const loadResult = LanguageStageRecord.fromJSON(json)
-    if (isError(loadResult)) {
-      return loadResult
-    }
-    return this.fromRecord(loadResult as LanguageStageRecord)
+  static fromStore(store: Store, id: string): Result<LanguageStage> {
+    return resultify(() => {
+      const record = throwUnless(store.languageStages.find(id))
+      const newLS = new LanguageStage()
+      newLS.name = record.name
+  
+      newLS.ancestor =
+        record.ancestorId === null
+          ? null
+          : throwUnless(LanguageStage.fromStore(store, record.ancestorId))
+  
+      newLS.branches = record.branchIds.map(branchId =>
+        throwUnless(LanguageStage.fromStore(store, branchId))
+      )
+      return newLS
+    })
   }
 
-  static fromRecord(record: LanguageStageRecord): LanguageStage {
-    const newP = new LanguageStage()
-    newP.name = record.name
-    return newP
-  }
-
-  toRecord(): LanguageStageRecord {
-    return new LanguageStageRecord({ name: this.name })
-  }
+  // toRecord(): LanguageStageRecord {
+  //   return new LanguageStageRecord({ id: this.id, name: this.name })
+  // }
 }

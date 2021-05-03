@@ -1,14 +1,11 @@
-import SCRecord from '@/records/screcord'
-
-export default class LanguageStageRecord extends SCRecord {
+export default class LanguageStageRecord {
+  id!: string;
   name!: string | null;
+  ancestorId!: string | null;
+  branchIds!: string[];
 
-  constructor(args: { name: string | null }) {
-    super()
-    Object.assign(this, args)
-  }
-
-  static get schema(): string {
-    return require("@/schemas/languageStage.json")
-  }
+  // constructor(args: { id: string, name: string | null }) {
+  //   super()
+  //   Object.assign(this, args)
+  // }
 }

@@ -1,5 +1,5 @@
 import { Result } from '@/lib/result'
-import SCRecord from '@/records/screcord'
+import SCRecord from '@/records/SCRecord'
 
 export default class RecordSet<T extends SCRecord> {
   records: T[]

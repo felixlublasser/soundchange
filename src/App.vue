@@ -12,11 +12,11 @@
 import { Component, Vue } from 'vue-property-decorator';
 import HomeView from '@/views/Home.vue';
 import ProjectView from '@/views/Project.vue';
-import AppView from '@/models/appView';
-import Project from '@/models/project';
+import AppView from '@/models/AppView';
+import Project from '@/models/Project';
 import { ipcRenderer } from 'electron';
 import { isSuccess, throwUnless } from './lib/result';
-import Store from '@/records/store'
+import Store from '@/records/Store'
 
 @Component({
   components: {
@@ -64,11 +64,11 @@ export default class App extends Vue {
   }
 
   saveProject(): void {
-    // if (!this.project.filePath) {
-    //   throw new Error('A project without a file path cannot be saved')
-    // } else {
-    //   ipcRenderer.send('saveProject', this.project.toRecord(), this.project.filePath)
-    // }
+    if (!this.project.filePath) {
+      throw new Error('A project without a file path cannot be saved')
+    } else {
+      ipcRenderer.send('saveProject', Store.fromProject(this.project), this.project.filePath)
+    }
   }
 }
 </script>

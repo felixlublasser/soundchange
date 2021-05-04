@@ -12,7 +12,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import { ipcRenderer } from 'electron';
-import AppView from '@/models/appView'
+import AppView from '@/models/AppView'
 
 @Component({})
 export default class HomeView extends Vue {

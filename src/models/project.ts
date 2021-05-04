@@ -1,5 +1,5 @@
-import LanguageStage from '@/models/languageStage'
-import Store from '@/records/store'
+import LanguageStage from '@/models/LanguageStage'
+import Store from '@/records/Store'
 import { Result, resultify, throwUnless } from '@/lib/result'
 
 export default class Project {
@@ -11,13 +11,15 @@ export default class Project {
     return resultify(() => {
       const newP = new Project()
       newP.version = store.version
-      newP.protoLanguage = throwUnless(LanguageStage.fromStore(store, store.protoLanguageId))
+      newP.protoLanguage = throwUnless(
+        LanguageStage.fromStore(store, store.protoLanguageId, null)
+      )
       newP.filePath = filePath
       return newP
     })
   }
 
-  // toRecord(): ProjectRecord {
-  //   return new ProjectRecord({ version: this.version, protoLanguage: this.protoLanguage.toRecord() })
-  // }
+  get allLanguageStages(): LanguageStage[] {
+    return this.protoLanguage.allDescendants
+  }
 }

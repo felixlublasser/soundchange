@@ -1,7 +1,9 @@
 import { Result } from '@/lib/result'
-import LanguageStageRecord from './languageStage'
+import LanguageStageRecord from '@/records/LanguageStage'
 import Ajv, { JSONSchemaType } from 'ajv'
-import RecordSet from '@/records/recordSet'
+import RecordSet from '@/records/RecordSet'
+import LanguageStage from '@/models/LanguageStage'
+import Project from '@/models/Project'
 
 export default class Store {
   version!: string
@@ -25,5 +27,13 @@ export default class Store {
     } else {
       return new Error(JSON.stringify(validate.errors))
     }
+  }
+
+  static fromProject(project: Project): Store {
+    const store = new Store()
+    store.version = project.version
+    store.protoLanguageId = project.protoLanguage.id
+    store._languageStages = project.allLanguageStages.map((ls: LanguageStage) => ls.toRecord)
+    return store
   }
 }

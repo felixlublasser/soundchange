@@ -5,7 +5,7 @@
     "version": {
       "type": "string"
     },
-    "languageStages": {
+    "_languageStages": {
       "type": "array",
       "items": {
         "title": "LanguageStage",
@@ -16,9 +16,6 @@
           },
           "name": {
             "type": "string"
-          },
-          "ancestorId": {
-            "type": ["string", "null"]
           },
           "branchIds": {
             "type": "array",

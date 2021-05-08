@@ -5,13 +5,24 @@ import RecordSet from '@/records/RecordSet'
 import LanguageStage from '@/models/LanguageStage'
 import Project from '@/models/Project'
 
+interface IStore {
+  version: string
+  _languageStages: LanguageStageRecord[]
+  protoLanguageId: string
+}
+
 export default class Store {
   version!: string
-  protoLanguageId!: string
   _languageStages!: LanguageStageRecord[]
+  protoLanguageId!: string
 
-  get languageStages(): RecordSet<LanguageStageRecord> {
-    return new RecordSet<LanguageStageRecord>(this._languageStages)
+  constructor(json: IStore) {
+    Object.assign(this, json)
+  }
+
+  get llanguageStages(): RecordSet<LanguageStageRecord> {
+    console.log('here even?')
+    return new RecordSet(this._languageStages)
   }
 
   static get schema(): unknown {
@@ -23,17 +34,18 @@ export default class Store {
     console.log(this.schema)
     const validate = ajv.compile<Store>(this.schema as JSONSchemaType<unknown, false>)
     if (validate(json)) {
-      return json as Store
+      return new Store(json as IStore)
     } else {
       return new Error(JSON.stringify(validate.errors))
     }
   }
 
   static fromProject(project: Project): Store {
-    const store = new Store()
-    store.version = project.version
-    store.protoLanguageId = project.protoLanguage.id
-    store._languageStages = project.allLanguageStages.map((ls: LanguageStage) => ls.toRecord)
+    const store = new Store({
+      version: project.version,
+      protoLanguageId: project.protoLanguage.id,
+      _languageStages: project.allLanguageStages.map((ls: LanguageStage) => ls.toRecord)
+    })
     return store
   }
 }

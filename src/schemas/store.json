@@ -24,9 +24,9 @@
             }
           }
         },
-        "required": ["id", "name","ancestorId","branchIds"]
+        "required": ["id", "name","branchIds"]
       }
     }
   },
-  "required": ["version", "languageStages"]
+  "required": ["version", "_languageStages"]
 }

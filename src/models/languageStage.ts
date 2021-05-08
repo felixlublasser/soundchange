@@ -1,4 +1,4 @@
-import LanguageStageRecord from '@/records/languageStage'
+import LanguageStageRecord from '@/records/LanguageStage'
 import Savable from '@/types/Savable'
 import Store from '@/records/Store'
 import { Result, resultify, throwUnless } from '@/lib/result';
@@ -24,7 +24,10 @@ export default class LanguageStage extends Savable {
 
   static fromStore(store: Store, id: string, ancestor: LanguageStage | null): Result<LanguageStage> {
     return resultify(() => {
-      const record = throwUnless(store.languageStages.find(id))
+      console.log('store', store._languageStages)
+      console.log('store', store.llanguageStages)
+      console.log(store instanceof Store)
+      const record = throwUnless(store.llanguageStages.find(id))
       const ls = new LanguageStage({
         id: record.id,
         name: record.name,
@@ -47,7 +50,7 @@ export default class LanguageStage extends Savable {
   }
 
   get allDescendants(): LanguageStage[] {
-    return this.branches.flatMap(branch => branch.allDescendants)
+    return [this, ...this.branches.flatMap(branch => branch.allDescendants)]
   }
 
   addBranch(): void {

@@ -6,7 +6,6 @@ export default class RecordSet<T extends SCRecord> {
 
   constructor(records: T[]) {
     this.records = records
-    console.log('getting here')
   }
 
   find(id: string): Result<T> {

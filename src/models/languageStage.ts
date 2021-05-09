@@ -24,9 +24,6 @@ export default class LanguageStage extends Savable {
 
   static fromStore(store: Store, id: string, ancestor: LanguageStage | null): Result<LanguageStage> {
     return resultify(() => {
-      console.log('store', store._languageStages)
-      console.log('store', store.llanguageStages)
-      console.log(store instanceof Store)
       const record = throwUnless(store.llanguageStages.find(id))
       const ls = new LanguageStage({
         id: record.id,

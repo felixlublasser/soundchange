@@ -21,7 +21,6 @@ export default class Store {
   }
 
   get llanguageStages(): RecordSet<LanguageStageRecord> {
-    console.log('here even?')
     return new RecordSet(this._languageStages)
   }
 
@@ -31,7 +30,6 @@ export default class Store {
 
   static fromJSON(json: unknown): Result<Store> {
     const ajv = new Ajv()
-    console.log(this.schema)
     const validate = ajv.compile<Store>(this.schema as JSONSchemaType<unknown, false>)
     if (validate(json)) {
       return new Store(json as IStore)

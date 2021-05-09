@@ -8,7 +8,6 @@ export const defineEndpoints = ():void => {
   })
 
   ipcMain.handle('addToRecentProjects', async (_event, filePath: string) => {
-    console.log('got request')
     const userSettings = await new File(`${app.getPath('userData')}/recentProjects`).load({ ignoreNotFound: true })
     if (!userSettings.parsed) {
       userSettings.parsed = { recentProjects: [filePath] }

@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <ContextMenu />
     <component
       :is="currentView"
       v-bind="{ project }"
@@ -17,11 +18,13 @@ import Project from '@/models/Project';
 import { ipcRenderer } from 'electron';
 import { isSuccess, throwUnless } from './lib/result';
 import Store from '@/records/Store'
+import ContextMenu from '@/components/ContextMenu.vue'
 
 @Component({
   components: {
     HomeView,
-    ProjectView
+    ProjectView,
+    ContextMenu
   },
 })
 export default class App extends Vue {
@@ -77,6 +80,10 @@ export default class App extends Vue {
 html, body {
   height: 100%;
   margin: 0;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 #app {

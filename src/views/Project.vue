@@ -1,6 +1,9 @@
 <template>
   <div class="project-main">
-    <Tree :protoLanguage="project.protoLanguage" class="tree" />
+    <Tree v-bind="{
+      protoLanguage: project.protoLanguage,
+      selectedLanguageStage
+    }" class="tree" @select="select"/>
     <Inspector :languageStage="selectedLanguageStage" class="inspector" />
   </div>
 </template>
@@ -17,12 +20,17 @@ export default class ProjectView extends Vue {
   @Prop({ type: Project, required: true }) project!: Project
   
   selectedLanguageStage: LanguageStage | null = null
+
+  select(ls: LanguageStage): void {
+    this.selectedLanguageStage = ls
+  }
 }
 </script>
 
 <style lang="scss" scoped>
 .project-main {
   display: flex;
+  height: 100%;
 }
 
 .tree {

@@ -1,6 +1,6 @@
 <template>
   <div class="inspector-main">
-    {{ JSON.stringify(languageStage) }}
+    <input v-if="languageStage" v-model="languageStage.name"/>
   </div>
 </template>
 
@@ -17,5 +17,6 @@ export default class Inspector extends Vue {
 <style lang="scss" scoped>
 .inspector-main {
   background-color: #555;
+  padding: 16px;
 }
 </style>

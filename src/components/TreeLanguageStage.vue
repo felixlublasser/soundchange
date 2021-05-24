@@ -1,5 +1,5 @@
 <template>
-  <div class="treelangstage-wrapper">
+  <div class="treelangstage-wrapper" ref="wrapper">
     <div
       class="treelangstage-main"
       :class="{ selected: isSelected }"
@@ -28,6 +28,7 @@
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import LanguageStage from '@/models/LanguageStage';
 import EventBus from '@/lib/EventBus';
+import ScreenPosition from '@/types/ScreenPosition'
 
 @Component
 export default class TreeLanguageStage extends Vue {
@@ -36,6 +37,14 @@ export default class TreeLanguageStage extends Vue {
 
   get isSelected(): boolean {
     return this.languageStage === this.selectedLanguageStage
+  }
+
+  getBottomLeftCorner(): ScreenPosition {
+    const rect = (this.$refs.wrapper as HTMLElement).getBoundingClientRect()
+    return {
+      top: rect.top + rect.height,
+      left: rect.left
+    }
   }
 
   openContextMenu(): void {
@@ -52,7 +61,7 @@ export default class TreeLanguageStage extends Vue {
           //TODO
         }
       }
-    ], { x: 0, y: 0 })
+    ], this.getBottomLeftCorner())
   }
 }
 </script>
@@ -85,7 +94,6 @@ export default class TreeLanguageStage extends Vue {
         padding: 0;
         background-color: #333;
         color: unset;
-        height: 100%;
         border: none;
         border-top-right-radius: 4px;
         border-bottom-right-radius: 4px;
@@ -104,6 +112,7 @@ export default class TreeLanguageStage extends Vue {
   &-wrapper {
     display: flex;
     flex-direction: column;
+    height: min-content;
   }
 
   &-branches {

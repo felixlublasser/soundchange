@@ -2,7 +2,7 @@
   <div
     v-if="menuItems !== null"
     class="context-menu-main"
-    :style="`top:${position.y};left:${position.x}`"
+    :style="`top:${position.top}px;left:${position.left}px;`"
   >
     <div
       v-for="(menuItem, i) in menuItems"
@@ -18,6 +18,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import EventBus from '@/lib/EventBus'
+import ScreenPosition from '@/types/ScreenPosition';
 
 interface MenuItem {
   name: string;
@@ -27,13 +28,17 @@ interface MenuItem {
 @Component
 export default class ContextMenu extends Vue {
   menuItems: MenuItem[] | null = null
-  position: { x: number, y: number } | null = null
+  position: ScreenPosition | null = null
 
   created(): void {
-    EventBus.$on('openContextMenu', (menuItems: MenuItem[], position: { x: number, y: number }) => {
-      this.menuItems = menuItems
-      this.position = position
-    })
+    EventBus.$on(
+      'openContextMenu',
+      (menuItems: MenuItem[], position: ScreenPosition) => {
+        console.log('postion', position)
+        this.menuItems = menuItems
+        this.position = position
+      }
+    )
 
     EventBus.$on('closeContextMenu', () => {
       this.close()

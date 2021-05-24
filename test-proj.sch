@@ -1,1 +1,1 @@
-{"version":"0.0.1","protoLanguageId":"1","_languageStages":[{"id":"1","name":"OldSaxolia","branchIds":[]}]}
+{"version":"0.0.1","protoLanguageId":"1","_languageStages":[{"id":"1","name":"OldSaxolia","branchIds":[],"originalWordIds":["c79fdd23-25eb-48d9-ab98-e669c0c3089a","9c96f4f1-56ce-4d1e-ba39-78ec07d77665","309005a4-1018-444c-9fb7-d29f3b845163"]}],"_originalWords":[{"id":"c79fdd23-25eb-48d9-ab98-e669c0c3089a","roman":"blabla"},{"id":"9c96f4f1-56ce-4d1e-ba39-78ec07d77665","roman":"blublu"},{"id":"309005a4-1018-444c-9fb7-d29f3b845163","roman":"bleble"}]}

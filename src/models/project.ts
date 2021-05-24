@@ -1,6 +1,7 @@
 import LanguageStage from '@/models/LanguageStage'
 import Store from '@/records/Store'
 import { Result, resultify, throwUnless } from '@/lib/result'
+import OriginalWord from '@/models/OriginalWord'
 
 export default class Project {
   version = '0_0_1'
@@ -21,5 +22,9 @@ export default class Project {
 
   get allLanguageStages(): LanguageStage[] {
     return this.protoLanguage.allDescendants
+  }
+
+  get allOriginalWords(): OriginalWord[] {
+    return this.allLanguageStages.flatMap(ls => ls.originalWords)
   }
 }

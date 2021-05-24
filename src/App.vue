@@ -5,6 +5,7 @@
       :is="currentView"
       v-bind="{ project }"
       @navigateTo="navigateTo"
+      @loadRecentProject="loadProject"
     />
   </div>
 </template>
@@ -34,6 +35,7 @@ export default class App extends Vue {
   created(): void {
     ipcRenderer.on('openedProject', (_event, json, filePath) => {
       this.mountProject(json, filePath)
+      ipcRenderer.send('addToRecentProjects', filePath)
     })
 
     ipcRenderer.on('getProjectDataToSave', () => {

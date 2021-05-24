@@ -1,5 +1,6 @@
 import { Result } from '@/lib/result'
 import LanguageStageRecord from '@/records/LanguageStage'
+import OriginalWordRecord from '@/records/OriginalWord'
 import Ajv, { JSONSchemaType } from 'ajv'
 import RecordSet from '@/records/RecordSet'
 import LanguageStage from '@/models/LanguageStage'
@@ -8,20 +9,26 @@ import Project from '@/models/Project'
 interface IStore {
   version: string
   _languageStages: LanguageStageRecord[]
+  _originalWords: OriginalWordRecord[]
   protoLanguageId: string
 }
 
 export default class Store {
   version!: string
   _languageStages!: LanguageStageRecord[]
+  _originalWords!: OriginalWordRecord[]
   protoLanguageId!: string
 
   constructor(json: IStore) {
     Object.assign(this, json)
   }
 
-  get llanguageStages(): RecordSet<LanguageStageRecord> {
+  get languageStages(): RecordSet<LanguageStageRecord> {
     return new RecordSet(this._languageStages)
+  }
+
+  get originalWords(): RecordSet<OriginalWordRecord> {
+    return new RecordSet(this._originalWords)
   }
 
   static get schema(): unknown {
@@ -42,7 +49,8 @@ export default class Store {
     const store = new Store({
       version: project.version,
       protoLanguageId: project.protoLanguage.id,
-      _languageStages: project.allLanguageStages.map((ls: LanguageStage) => ls.toRecord)
+      _languageStages: project.allLanguageStages.map((ls: LanguageStage) => ls.toRecord),
+      _originalWords: project.allOriginalWords.map(w => w.toRecord)
     })
     return store
   }

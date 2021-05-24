@@ -22,11 +22,44 @@
             "items": {
               "type": "string"
             }
+          },
+          "originalWordIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         },
-        "required": ["id", "name","branchIds"]
+        "required": [
+          "id",
+          "name",
+          "branchIds"
+        ]
+      }
+    },
+    "_originalWords": {
+      "type": "array",
+      "items": {
+        "title": "OriginalWord",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "roman": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "roman"
+        ]
       }
     }
   },
-  "required": ["version", "_languageStages"]
+  "required": [
+    "version",
+    "_languageStages",
+    "_originalWords"
+  ]
 }

@@ -4,11 +4,15 @@ import Json from '../lib/json'
 
 export const defineEndpoints = ():void => {
   ipcMain.handle('getRecentProjects', async () => {
-    return (await new File(`${app.getPath('userData')}/recentProjects`).load({ ignoreNotFound: true })).parsed
+    const file = (await new File(`${app.getPath('userData')}/recentProjects`)
+      .load({ ignoreNotFound: true })).parsed
+    return file && file.recentProjects
   })
 
-  ipcMain.handle('addToRecentProjects', async (_event, filePath: string) => {
+  ipcMain.on('addToRecentProjects', async (_event, filePath: string) => {
+    console.log('received command')
     const userSettings = await new File(`${app.getPath('userData')}/recentProjects`).load({ ignoreNotFound: true })
+    console.log('loaded file', JSON.stringify(userSettings))
     if (!userSettings.parsed) {
       userSettings.parsed = { recentProjects: [filePath] }
     } else if (!Array.isArray(userSettings.parsed.recentProjects)) {
@@ -16,7 +20,7 @@ export const defineEndpoints = ():void => {
     } else {
       userSettings.parsed.recentProjects = [...new Set([filePath, ...userSettings.parsed.recentProjects])]
     }
-    return userSettings.save()
+    userSettings.save()
   })
 
   ipcMain.handle('loadProject', async (_event, filePath: string) => {

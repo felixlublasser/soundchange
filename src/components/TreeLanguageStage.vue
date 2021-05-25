@@ -4,7 +4,7 @@
       class="treelangstage-main"
       :class="{ selected: isSelected }"
     >
-      <span @click="$emit('select')">
+      <span @click="$emit('select', languageStage)">
         {{ languageStage.name }}
       </span>
       <button class="menu-button" @click="openContextMenu">
@@ -12,14 +12,14 @@
       </button>
     </div>
     <div class="treelangstage-branches">
-      <div v-for="(branch, i) in languageStage.branches" :key="i">
-        <TreeLanguageStage
-          v-bind="{
-            languageStage: branch,
-            selectedLanguageStage
-          }"
-        />
-      </div>
+      <TreeLanguageStage
+        v-for="(branch, i) in languageStage.branches" :key="i"
+        v-bind="{
+          languageStage: branch,
+          selectedLanguageStage
+        }"
+        v-on="$listeners"
+      />
     </div>
   </div>
 </template>
@@ -52,7 +52,8 @@ export default class TreeLanguageStage extends Vue {
       {
         label: 'Create branch',
         onClick: (): void => {
-          this.languageStage.addBranch()
+          const branch = this.languageStage.addBranch()
+          this.$emit('select', branch)
         }
       },
       {

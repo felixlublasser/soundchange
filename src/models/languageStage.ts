@@ -7,10 +7,10 @@ import { Result, resultify, throwUnless } from '@/lib/result';
 
 interface ILanguageStage {
   id?: string;
-  name: string | null;
-  ancestor: LanguageStage | null;
-  branches: LanguageStage[];
-  originalWords: OriginalWord[];
+  name?: string | null;
+  ancestor?: LanguageStage | null;
+  branches?: LanguageStage[];
+  originalWords?: OriginalWord[];
 }
 
 export default class LanguageStage extends Savable {
@@ -19,12 +19,12 @@ export default class LanguageStage extends Savable {
   branches: LanguageStage[];
   originalWords: OriginalWord[];
 
-  constructor(args: ILanguageStage = { name: null, ancestor: null, branches: [], originalWords: [] }) {
+  constructor(args: ILanguageStage = {}) {
     super(args.id)
-    this.name = args.name
-    this.ancestor = args.ancestor
-    this.branches = args.branches
-    this.originalWords = args.originalWords
+    this.name = args.name === undefined ? null : args.name
+    this.ancestor = args.ancestor === undefined ? null : args.ancestor
+    this.branches = args.branches === undefined ? [] : args.branches
+    this.originalWords = args.originalWords === undefined ? [] : args.originalWords
   }
 
   static fromStore(store: Store, id: string, ancestor: LanguageStage | null): Result<LanguageStage> {
@@ -65,11 +65,16 @@ export default class LanguageStage extends Savable {
   }
 
   get inheritedWords(): Word[] {
-    return []
+    if (this.ancestor === null) {
+      return []
+    }
+    return this.ancestor.allWords
   }
 
-  addBranch(): void {
-    this.branches.push(new LanguageStage())
+  addBranch(): LanguageStage {
+    const newBranch = new LanguageStage({ ancestor: this })
+    this.branches.push(newBranch)
+    return newBranch
   }
 
   addOriginalWord({ roman }: { roman: string }): void {

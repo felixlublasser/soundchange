@@ -5,7 +5,7 @@
         languageStage: protoLanguage,
         selectedLanguageStage
       }"
-      @select="select(protoLanguage)"
+      @select="select"
     />
   </div>
 </template>
@@ -24,7 +24,7 @@ export default class Tree extends Vue {
     return ls === this.selectedLanguageStage
   }
 
-  select(ls: LanguageStage): void {
+  select(ls: LanguageStage = this.protoLanguage): void {
     this.$emit('select', ls)
   }
 }

@@ -5,7 +5,7 @@
       <input v-model="languageStage.name"/>
       <h2>Words</h2>
       <input v-model="newWordRoman" />
-      <button @click="createWord">Create Word</button>
+      <button @click="createWord" :disabled="newWordIsEmpty">Create Word</button>
       <p v-for="(word, i) in sortedWords" :key="i">{{ word.roman }}</p>
     </template>
   </div>
@@ -22,6 +22,10 @@ export default class Inspector extends Vue {
   @Prop({ type: LanguageStage, default: null }) languageStage!: LanguageStage | null
 
   newWordRoman = '';
+
+  get newWordIsEmpty(): boolean {
+    return this.newWordRoman === ''
+  }
 
   createWord(): void {
     if (this.languageStage === null) return

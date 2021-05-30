@@ -1,16 +1,21 @@
 <template>
   <div
     v-if="menuItems !== null"
-    class="context-menu-main"
-    :style="`top:${position.top}px;left:${position.left}px;`"
+    @click.prevent="close()"
+    class="overlay"
   >
     <div
-      v-for="(menuItem, i) in menuItems"
-      :key="i"
-      @click="callMenuItem(menuItem)"
-      class="menu-item"
+      class="context-menu-main"
+      :style="`top:${position.top}px;left:${position.left}px;`"
     >
-      {{ menuItem.label }}
+      <div
+        v-for="(menuItem, i) in menuItems"
+        :key="i"
+        @click.stop="callMenuItem(menuItem)"
+        class="menu-item"
+      >
+        {{ menuItem.label }}
+      </div>
     </div>
   </div>
 </template>
@@ -58,6 +63,15 @@ export default class ContextMenu extends Vue {
 </script>
 
 <style lang="scss">
+.overlay {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: transparent;
+}
+
 .context-menu-main {
   position: absolute;
   border: 1px solid #888;

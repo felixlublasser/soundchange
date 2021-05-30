@@ -3,7 +3,9 @@ import Savable from '@/types/Savable'
 import Store from '@/records/Store'
 import OriginalWord from '@/models/OriginalWord'
 import Word from '@/models/Word'
+import SoundChange from '@/models/SoundChange'
 import { Result, resultify, throwUnless } from '@/lib/result';
+import ISoundChange from '@/types/ISoundChange'
 
 interface ILanguageStage {
   id?: string;
@@ -11,6 +13,7 @@ interface ILanguageStage {
   ancestor?: LanguageStage | null;
   branches?: LanguageStage[];
   originalWords?: OriginalWord[];
+  soundChanges?: SoundChange[];
 }
 
 export default class LanguageStage extends Savable {
@@ -18,6 +21,7 @@ export default class LanguageStage extends Savable {
   ancestor: LanguageStage | null;
   branches: LanguageStage[];
   originalWords: OriginalWord[];
+  soundChanges: SoundChange[];
 
   constructor(args: ILanguageStage = {}) {
     super(args.id)
@@ -25,6 +29,7 @@ export default class LanguageStage extends Savable {
     this.ancestor = args.ancestor === undefined ? null : args.ancestor
     this.branches = args.branches === undefined ? [] : args.branches
     this.originalWords = args.originalWords === undefined ? [] : args.originalWords
+    this.soundChanges = args.soundChanges === undefined ? [] : args.soundChanges
   }
 
   static fromStore(store: Store, id: string, ancestor: LanguageStage | null): Result<LanguageStage> {
@@ -35,13 +40,17 @@ export default class LanguageStage extends Savable {
         name: record.name,
         ancestor: ancestor,
         branches: [],
-        originalWords: []
+        originalWords: [],
+        soundChanges: [],
       })
       ls.branches = record.branchIds.map(branchId =>
         throwUnless(LanguageStage.fromStore(store, branchId, ls))
       )
       ls.originalWords = record.originalWordIds.map(wordId =>
         throwUnless(OriginalWord.fromStore(store, wordId, ls))
+      )
+      ls.soundChanges = record.soundChangeIds.map(soundChangeId =>
+        throwUnless(SoundChange.fromStore(store, soundChangeId, ls))
       )
       return ls
     })
@@ -52,7 +61,8 @@ export default class LanguageStage extends Savable {
       id: this.id,
       name: this.name,
       branchIds: this.branches.map(b => b.id),
-      originalWordIds: this.originalWords.map(w => w.id)
+      originalWordIds: this.originalWords.map(w => w.id),
+      soundChangeIds: this.soundChanges.map(sc => sc.id),
     })
   }
 
@@ -68,7 +78,9 @@ export default class LanguageStage extends Savable {
     if (this.ancestor === null) {
       return []
     }
-    return this.ancestor.allWords
+    return this.ancestor.allWords.map(word => {
+      return this.soundChanges.reduce((w, sc) => sc.mangle(w), word)
+    })
   }
 
   addBranch(): LanguageStage {
@@ -79,5 +91,9 @@ export default class LanguageStage extends Savable {
 
   addOriginalWord({ roman }: { roman: string }): void {
     this.originalWords.push(new OriginalWord({ roman, languageStage: this }))
+  }
+
+  addSoundChange(args: ISoundChange): void {
+    this.soundChanges.push(new SoundChange(this, args))
   }
 }

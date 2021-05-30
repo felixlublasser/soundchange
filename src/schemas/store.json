@@ -28,12 +28,20 @@
             "items": {
               "type": "string"
             }
+          },
+          "soundChangeIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         },
         "required": [
           "id",
           "name",
-          "branchIds"
+          "branchIds",
+          "originalWordIds",
+          "soundChangeIds"
         ]
       }
     },
@@ -55,11 +63,43 @@
           "roman"
         ]
       }
+    },
+    "_soundChanges": {
+      "type": "array",
+      "items": {
+        "title": "SonudChange",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "contextBefore": {
+            "type": "string"
+          },
+          "contextAfter": {
+            "type": "string"
+          },
+          "replace": {
+            "type": "string"
+          },
+          "replaceWith": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "contextBefore",
+          "contextAfter",
+          "replace",
+          "replaceWith"
+        ]
+      }
     }
   },
   "required": [
     "version",
     "_languageStages",
-    "_originalWords"
+    "_originalWords",
+    "_soundChanges"
   ]
 }

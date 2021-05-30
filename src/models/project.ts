@@ -1,7 +1,8 @@
-import LanguageStage from '@/models/LanguageStage'
 import Store from '@/records/Store'
 import { Result, resultify, throwUnless } from '@/lib/result'
+import LanguageStage from '@/models/LanguageStage'
 import OriginalWord from '@/models/OriginalWord'
+import SoundChange from '@/models/SoundChange'
 
 export default class Project {
   version = '0_0_1'
@@ -26,5 +27,9 @@ export default class Project {
 
   get allOriginalWords(): OriginalWord[] {
     return this.allLanguageStages.flatMap(ls => ls.originalWords)
+  }
+
+  get allSoundChanges(): SoundChange[] {
+    return this.allLanguageStages.flatMap(ls => ls.soundChanges)
   }
 }

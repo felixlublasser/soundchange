@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "properties": {
+    "recentProjects": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

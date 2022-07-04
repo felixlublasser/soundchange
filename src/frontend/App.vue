@@ -6,6 +6,7 @@
       v-bind="{ project }"
       @navigateTo="navigateTo"
       @loadRecentProject="loadProject"
+      @createNewProject="createNewProject"
     />
   </div>
 </template>
@@ -32,7 +33,7 @@ export default class App extends Vue {
   project: Project | null = null
 
   created(): void {
-    this.createNewProject()
+    // this.createNewProject()
     // ipcRenderer.on('openedProject', (_event, project) => {
     //   this.mountProject(project)
     //   ipcRenderer.send('addToRecentProjects', project.filePath)
@@ -60,7 +61,7 @@ export default class App extends Vue {
   }
 
   async loadProject(filePath: string): Promise<void> {
-    const project = await endpoints.getProject({ filePath })
+    const project = await endpoints.openProject({ filePath })
     if (isSuccess(project)) {
       this.mountProject(new Project(project))
     }

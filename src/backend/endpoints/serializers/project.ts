@@ -1,8 +1,11 @@
-import Project from '@/interface/interfaces/Project'
-import Store from '@/backend/records/Store'
-import { isError, Result } from '@/lib/result'
+import ProjectInterface from '@/interface/interfaces/Project'
+import { isError } from '@/lib/result'
+import ProjectRecord from '@/backend/records/Project'
+import { Result } from '@/lib/result'
+import serializeLanguageBranch from './languageBranch'
 
-export default function serializeProject(store: Store, filePath: string | null): Result<Project> {
+export default function serializeProject(projectRecord: ProjectRecord): Result<ProjectInterface> {
+  const store = projectRecord.store
   if (!store.protoLanguageId) {
     return new Error('Store has no proto language.')
   }
@@ -10,12 +13,14 @@ export default function serializeProject(store: Store, filePath: string | null):
   if (isError(protoLanguage)) {
     return new Error('Store has dangling proto language reference.')
   }
+
+  const languageTree = serializeLanguageBranch(protoLanguage, store)
+  if (isError(languageTree)) { return languageTree }
+
   return {
+    id: projectRecord.id,
     version: store.version,
-    protoLanguage: {
-      id: protoLanguage.id,
-      name: protoLanguage.record.name,
-    },
-    filePath
+    languageTree,
+    filePath: projectRecord.filePath
   }
 }

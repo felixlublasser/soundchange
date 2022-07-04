@@ -1,7 +1,8 @@
-import LanguageStage from './LanguageStage'
+import LanguageBranch from './LanguageBranch'
 
 export default interface ProjectInterface {
+  id: string
   version: string
   filePath: string | null
-  protoLanguage: LanguageStage
+  languageTree: LanguageBranch
 }

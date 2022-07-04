@@ -7,7 +7,7 @@ interface FSError extends Error {
 
 export default class File {
   filePath: string
-  raw: string | null = null
+  protected raw: string | null = null
 
   constructor(filePath: string) {
     this.filePath = filePath
@@ -21,7 +21,7 @@ export default class File {
       if (error.code !== 'ENOENT' || !ignoreNotFound) {
         return new Error(`Error loading file ${this.filePath}: ${error.message}`)
       } else {
-        return error
+        throw error
       }
     }
     return this

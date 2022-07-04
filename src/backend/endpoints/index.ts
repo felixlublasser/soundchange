@@ -3,14 +3,20 @@ import {
   // dialog,
   ipcMain } from 'electron'
 import getProject from '@/backend/endpoints/getProject'
+import openProject from '@/backend/endpoints/openProject'
 import newProject from '@/backend/endpoints/newProject'
+import getLanguageStage from '@/backend/endpoints/getLanguageStage'
+import updateLanguageStage from '@/backend/endpoints/updateLanguageStage'
 import getRecentProjectFileNames from '@/backend/endpoints/getRecentProjectFileNames'
 import Endpoints from '@/interface/endpoints'
 
 const endpoints: Endpoints = {
   getProject,
+  openProject,
   newProject,
   getRecentProjectFileNames,
+  getLanguageStage,
+  updateLanguageStage,
 }
 
 export const defineEndpoints = (): void => {
@@ -18,7 +24,7 @@ export const defineEndpoints = (): void => {
     const implementation = endpoints[key]
     ipcMain.handle(
       key,
-      (_, ...args) => implementation(args as any)
+      (_, arg) => implementation(arg as any)
     )
   }
 

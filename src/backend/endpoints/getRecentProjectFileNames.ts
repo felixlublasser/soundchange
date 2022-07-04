@@ -1,26 +1,32 @@
-import { Result } from '@/lib/result'
 import JsonFile from '@/backend/lib/file/jsonFile'
 import { app } from 'electron'
-import FileName from '@/interface/interfaces/FileName'
 import { isError, collectify } from '@/lib/result'
 import serializeFileName from '@/backend/endpoints/serializers/fileName'
+import RecentProjectsSchema from '@/backend/schemas/recentProjects'
+import { JTDDataType } from 'ajv/dist/jtd'
+import { GetRecentProjectFileNames } from '@/interface/endpoints'
 
 class ProjectFileNames {
   fileNames: string[]
 
-  constructor(fileNames: string[]) {
-    this.fileNames = fileNames
+  constructor(data: JTDDataType<typeof RecentProjectsSchema>) {
+    this.fileNames = data.recentProjects
   }
 
-  static get schema(): unknown {
-    return require("@/schemas/store.json")
+  static get schema() {
+    return RecentProjectsSchema
   }
 }
 
-export default async function newProject(): Promise<Result<FileName[]>> {
+const getRecentProjectFileNames: GetRecentProjectFileNames = async () => {
   const filePath = `${app.getPath('userData')}/recentProjects`
-  const file = (await new JsonFile<typeof ProjectFileNames>(filePath, ProjectFileNames)
-    .load({ ignoreNotFound: true }))
+  const jsonFile = new JsonFile<typeof ProjectFileNames, typeof RecentProjectsSchema>(
+    filePath,
+    ProjectFileNames
+  )
+  const file = await jsonFile.load({ ignoreNotFound: true })
   if (isError(file)) { return file }
   return collectify(file.parsedObject.fileNames.map(serializeFileName))
 }
+
+export default getRecentProjectFileNames

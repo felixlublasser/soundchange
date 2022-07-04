@@ -16,7 +16,6 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import endpoints from '@/frontend/lib/endpoints';
-import AppView from '@/frontend/types/AppView'
 import { isSuccess } from '@/lib/result'
 
 @Component({})
@@ -31,7 +30,7 @@ export default class HomeView extends Vue {
   }
 
   createNewProject(): void {
-    this.$emit('navigateTo', AppView.PROJECT)
+    this.$emit('createNewProject')
   }
 
   loadExistingProject(): void {

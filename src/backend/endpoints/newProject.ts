@@ -1,9 +1,11 @@
-import Project from '@/interface/interfaces/Project'
-import { Result } from '@/lib/result'
-import Store from '@/backend/records/Store'
+import Project from '@/backend/records/Project'
 import serializeProject from '@/backend/endpoints/serializers/project'
+import { NewProject } from '@/interface/endpoints'
+import State from '@/backend/state'
 
-export default async function newProject(): Promise<Result<Project>> {
-  const store = new Store()
-  return serializeProject(store, null)
+const newProject: NewProject = async () => {
+  const project = new Project({})
+  State.addOpenProject(project)
+  return serializeProject(project)
 }
+export default newProject

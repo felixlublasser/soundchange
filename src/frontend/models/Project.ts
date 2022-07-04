@@ -1,15 +1,15 @@
-// import Store from '@/backend/records/Store'
-// import { Result, resultify, succeedOrThrow } from '@/lib/result'
-import LanguageStage from '@/frontend/models/LanguageStage'
-// import OriginalWord from '@/frontend/models/OriginalWord'
-// import SoundChange from '@/frontend/models/SoundChange'
+import LanguageTreeBranch from '@/frontend/models/LanguageBranch'
 import ProjectInterface from '@/interface/interfaces/Project'
 
 export default class Project {
-  data: ProjectInterface
+  private data: ProjectInterface
 
   constructor(data: ProjectInterface) {
     this.data = data
+  }
+
+  get id(): string {
+    return this.data.id
   }
 
   get version(): string {
@@ -20,19 +20,7 @@ export default class Project {
     return this.data.filePath
   }
 
-  get protoLanguage(): LanguageStage {
-    return new LanguageStage(this.data.protoLanguage)
+  get languageTree(): LanguageTreeBranch {
+    return new LanguageTreeBranch(this.data.languageTree)
   }
-
-  // get allLanguageStages(): LanguageStage[] {
-  //   return this.protoLanguage.allDescendants
-  // }
-
-  // get allOriginalWords(): OriginalWord[] {
-  //   return this.allLanguageStages.flatMap(ls => ls.originalWords)
-  // }
-
-  // get allSoundChanges(): SoundChange[] {
-  //   return this.allLanguageStages.flatMap(ls => ls.soundChanges)
-  // }
 }

@@ -1,9 +1,9 @@
 <template>
   <div class="tree-main">
-    <TreeLanguageStage
+    <SubTree
       v-bind="{
-        languageStage: protoLanguage,
-        selectedLanguageStage
+        languageBranch: languageTree,
+        selectedLanguageStageId
       }"
       @select="select"
     />
@@ -12,20 +12,17 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
-import LanguageStage from '@/models/LanguageStage';
-import TreeLanguageStage from '@/components/TreeLanguageStage.vue'
+import LanguageBranch from '@/frontend/models/LanguageBranch';
+import SubTree from '@/frontend/components/SubTree.vue'
 
-@Component({ components: { TreeLanguageStage }})
+@Component({ components: { SubTree }})
 export default class Tree extends Vue {
-  @Prop({ type: LanguageStage, required: true }) protoLanguage!: LanguageStage
-  @Prop({ type: LanguageStage, default: null }) selectedLanguageStage!: LanguageStage | null
+  @Prop({ type: LanguageBranch, required: true }) languageTree!: LanguageBranch
+  @Prop({ type: String, default: null }) selectedLanguageStageId!: string | null
 
-  isSelected(ls: LanguageStage): boolean {
-    return ls === this.selectedLanguageStage
-  }
-
-  select(ls: LanguageStage = this.protoLanguage): void {
-    this.$emit('select', ls)
+  select(languageStageId: string): void {
+    console.log('about to select')
+    this.$emit('select', languageStageId)
   }
 }
 </script>

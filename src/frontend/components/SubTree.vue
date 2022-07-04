@@ -1,21 +1,25 @@
 <template>
   <div class="treelangstage-wrapper" ref="wrapper">
     <div
-      @click.prevent="$emit('select', languageStage)"
+      @click.prevent="$emit('select', languageBranch.id)"
       @contextmenu="openContextMenu"
       class="treelangstage-main"
       :class="{ selected: isSelected }"
     >
       <span>
-        {{ languageStage.name }}
+        {{ languageBranch.name }}
       </span>
+      <template v-if="languageBranch.branches.length">
+        <span v-if="isExpanded" @click="collapse">-</span>
+        <span v-else @click="expand">+</span>
+      </template>
     </div>
-    <div class="treelangstage-branches">
-      <TreeLanguageStage
-        v-for="(branch, i) in languageStage.branches" :key="i"
+    <div v-if="isExpanded" class="treelangstage-branches">
+      <SubTree
+        v-for="(branch, i) in languageBranch.branches" :key="i"
         v-bind="{
-          languageStage: branch,
-          selectedLanguageStage
+          languageBranch: branch,
+          selectedLanguageStageId
         }"
         v-on="$listeners"
       />
@@ -25,26 +29,35 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
-import LanguageStage from '@/models/LanguageStage';
+import LanguageBranch from '@/frontend/models/LanguageBranch';
 import EventBus from '@/lib/EventBus';
 
 @Component
-export default class TreeLanguageStage extends Vue {
-  @Prop({ type: LanguageStage, required: true }) languageStage!: LanguageStage
-  @Prop({ type: LanguageStage, default: null }) selectedLanguageStage!: LanguageStage | null
+export default class SubTree extends Vue {
+  @Prop({ type: LanguageBranch, required: true }) languageBranch!: LanguageBranch
+  @Prop({ type: String, default: null }) selectedLanguageStageId!: string | null
+
+  isExpanded = false
 
   get isSelected(): boolean {
-    return this.languageStage === this.selectedLanguageStage
+    return this.languageBranch.id === this.selectedLanguageStageId
+  }
+
+  expand(): void {
+    this.isExpanded = true
+  }
+
+  collapse(): void {
+    this.isExpanded = false
   }
 
   openContextMenu(event: MouseEvent): void {
-    console.log('event', event)
     EventBus.$emit('openContextMenu', [
       {
         label: 'Create branch',
         onClick: (): void => {
-          const branch = this.languageStage.addBranch()
-          this.$emit('select', branch)
+          // const branch = this.languageStage.addBranch()
+          // this.$emit('select', branch)
         }
       },
       {

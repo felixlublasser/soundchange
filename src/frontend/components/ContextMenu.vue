@@ -23,7 +23,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import EventBus from '@/lib/EventBus'
-import ScreenPosition from '@/types/ScreenPosition';
+import ScreenPosition from '@/frontend/types/ScreenPosition';
 
 interface MenuItem {
   name: string;

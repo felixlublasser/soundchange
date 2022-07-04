@@ -2,18 +2,18 @@
   <div class="inspector-main">
     <template v-if="languageStage">
       <div class="header">
-        <input v-model="languageStage.name" class="input-h1"/>
+        <input v-model="name" @blur="updateLanguageStage" class="input-h1"/>
       </div>
 
       <div class="divided">
-        <div class="half words">
+        <!-- <div class="half words">
           <h2>Words</h2>
           <input v-model="newWordRoman" />
           <button @click="createWord" :disabled="newWordIsEmpty">Create Word</button>
           <p v-for="(word, i) in sortedWords" :key="'nw' + i">{{ word.shortHistory }}</p>
-        </div>
+        </div> -->
 
-        <div class="half sound-changes">
+        <!-- <div class="half sound-changes">
           <h2>Sound Changes</h2>
           <input
             v-for="(key, i) in Object.keys(newSoundChange)"
@@ -25,7 +25,7 @@
           <p v-for="(soundChange, i) in languageStage.soundChanges" :key="'nsc' + i">
             {{ soundChange.contextBefore }} | {{ soundChange.replace }} > {{ soundChange.replaceWith }} | {{ soundChange.contextAfter }}
           </p>
-        </div>
+        </div> -->
       </div>
     </template>
   </div>
@@ -33,55 +33,68 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
-import LanguageStage from '@/models/LanguageStage';
-import Word from '@/types/Word';
-import { compare } from '@/lib/helpers';
+import LanguageStage from '@/frontend/models/LanguageStage';
+// import Word from '@/frontend/types/Word';
+// import { compare } from '@/lib/helpers';
 
 @Component({})
 export default class Inspector extends Vue {
   @Prop({ type: LanguageStage, default: null }) languageStage!: LanguageStage | null
 
-  newWordRoman = '';
-  newSoundChange = {
-    contextBefore: '',
-    replace: '',
-    replaceWith: '',
-    contextAfter: ''
+  get name(): string | null {
+    return this.languageStage ? this.languageStage.name : null
   }
 
-  get newWordIsEmpty(): boolean {
-    return this.newWordRoman === ''
+  set name(value: string | null) {
+    if (!this.languageStage) { return }
+    this.languageStage.name = value
   }
 
-  get newSoundChangeIsValid(): boolean {
-    return this.newSoundChange.replace !== ''
+  updateLanguageStage(): void {
+    this.$emit('updateLanguageStage')
   }
 
-  resetNewSoundChange(): void {
-    this.newSoundChange = {
-      contextBefore: '',
-      replace: '',
-      replaceWith: '',
-      contextAfter: ''
-    }
-  }
+  // newWordRoman = '';
+  // newSoundChange = {
+  //   contextBefore: '',
+  //   replace: '',
+  //   replaceWith: '',
+  //   contextAfter: ''
+  // }
 
-  createWord(): void {
-    if (this.languageStage === null) return
-    this.languageStage.addOriginalWord({ roman: this.newWordRoman })
-    this.newWordRoman = ''
-  }
+  // get newWordIsEmpty(): boolean {
+  //   return this.newWordRoman === ''
+  // }
 
-  createSoundChange(): void {
-    if (this.languageStage === null) return
-    this.languageStage.addSoundChange(this.newSoundChange)
-    this.resetNewSoundChange()
-  }
+  // get newSoundChangeIsValid(): boolean {
+  //   return this.newSoundChange.replace !== ''
+  // }
 
-  get sortedWords(): Word[] {
-    if (this.languageStage === null) return []
-    return this.languageStage.allWords.sort(compare(word => word.roman))
-  }
+  // resetNewSoundChange(): void {
+  //   this.newSoundChange = {
+  //     contextBefore: '',
+  //     replace: '',
+  //     replaceWith: '',
+  //     contextAfter: ''
+  //   }
+  // }
+
+  // createWord(): void {
+    // if (this.languageStage === null) return
+    // this.languageStage.addOriginalWord({ roman: this.newWordRoman })
+    // this.newWordRoman = ''
+  // }
+
+  // createSoundChange(): void {
+    // if (this.languageStage === null) return
+    // this.languageStage.addSoundChange(this.newSoundChange)
+    // this.resetNewSoundChange()
+  // }
+
+  // get sortedWords(): Word[] {
+  //   if (this.languageStage === null) return []
+  //   return this.languageStage.allWords.sort(compare(word => word.roman))
+  // }
 }
 </script>
 

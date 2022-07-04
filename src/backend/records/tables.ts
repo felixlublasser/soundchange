@@ -1,5 +1,6 @@
 export interface ISoundChangeRecord {
   name: string | null
+  languageStageId: string
   contextBefore: string
   contextAfter: string
   replace: string
@@ -7,19 +8,19 @@ export interface ISoundChangeRecord {
 }
 
 export interface IOriginalWordRecord {
+  languageStageId: string
   roman: string
 }
 
 export interface ILanguageStageRecord {
   name: string | null
-  branchIds: string[]
-  originalWordIds: string[]
-  soundChangeIds: string[]
+  parentLanguageStageId: string | null
+  // branchIds: string[]
+  // originalWordIds: string[]
+  // soundChangeIds: string[]
 }
 
 export const LanguageStageRecordDefaults: ILanguageStageRecord = {
   name: null,
-  branchIds: [],
-  originalWordIds: [],
-  soundChangeIds: [],
+  parentLanguageStageId: null
 }

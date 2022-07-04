@@ -1,35 +1,39 @@
 import LanguageStageInterface from '@/interface/interfaces/LanguageStage'
+import LanguageStageUpdateInterface from '@/interface/interfaces/LanguageStageUpdate'
+import LanguageStageSummary from './LanguageStageSummary'
+import OriginalWord from './OriginalWord'
 
 export default class LanguageStage {
-  data: LanguageStageInterface
+  private data: LanguageStageInterface
+  private _dataChanged: LanguageStageUpdateInterface = {}
 
   constructor(data: LanguageStageInterface) {
     this.data = data
   }
 
-  // static fromStore(store: Store, id: string, ancestor: LanguageStage | null): Result<LanguageStage> {
-  //   return resultify(() => {
-  //     const record = succeedOrThrow(store.languageStages.find(id))
-  //     const ls = new LanguageStage({
-  //       id: record.id,
-  //       name: record.name,
-  //       ancestor: ancestor,
-  //       branches: [],
-  //       originalWords: [],
-  //       soundChanges: [],
-  //     })
-  //     ls.branches = record.branchIds.map(branchId =>
-  //       succeedOrThrow(LanguageStage.fromStore(store, branchId, ls))
-  //     )
-  //     ls.originalWords = record.originalWordIds.map(wordId =>
-  //       succeedOrThrow(OriginalWord.fromStore(store, wordId, ls))
-  //     )
-  //     ls.soundChanges = record.soundChangeIds.map(soundChangeId =>
-  //       succeedOrThrow(SoundChange.fromStore(store, soundChangeId, ls))
-  //     )
-  //     return ls
-  //   })
-  // }
+  get id(): string {
+    return this.data.id
+  }
+
+  get name(): string | null {
+    return this.data.name
+  }
+
+  set name(newName: string | null) {
+    this._dataChanged.name = newName
+  }
+
+  get branches(): LanguageStageSummary[] {
+    return this.data.branches.map(branch => new LanguageStageSummary(branch))
+  }
+
+  get originalWords(): OriginalWord[] {
+    return this.data.originalWords.map(word => new OriginalWord(word))
+  }
+
+  get dataChanged(): LanguageStageUpdateInterface {
+    return this._dataChanged
+  }
 
   // get toRecord(): LanguageStageRecord {
   //   return new LanguageStageRecord({

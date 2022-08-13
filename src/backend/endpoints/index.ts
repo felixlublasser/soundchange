@@ -5,18 +5,22 @@ import {
 import getProject from '@/backend/endpoints/getProject'
 import openProject from '@/backend/endpoints/openProject'
 import newProject from '@/backend/endpoints/newProject'
+import saveProject from '@/backend/endpoints/saveProject'
+import getRecentProjectFileNames from '@/backend/endpoints/getRecentProjectFileNames'
 import getLanguageStage from '@/backend/endpoints/getLanguageStage'
 import updateLanguageStage from '@/backend/endpoints/updateLanguageStage'
-import getRecentProjectFileNames from '@/backend/endpoints/getRecentProjectFileNames'
+import getWordsForLanguageStage from '@/backend/endpoints/getWordsForLanguageStage'
 import Endpoints from '@/interface/endpoints'
 
 const endpoints: Endpoints = {
   getProject,
   openProject,
   newProject,
+  saveProject,
   getRecentProjectFileNames,
   getLanguageStage,
   updateLanguageStage,
+  getWordsForLanguageStage
 }
 
 export const defineEndpoints = (): void => {

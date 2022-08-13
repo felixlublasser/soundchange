@@ -15,9 +15,6 @@ export interface IOriginalWordRecord {
 export interface ILanguageStageRecord {
   name: string | null
   parentLanguageStageId: string | null
-  // branchIds: string[]
-  // originalWordIds: string[]
-  // soundChangeIds: string[]
 }
 
 export const LanguageStageRecordDefaults: ILanguageStageRecord = {

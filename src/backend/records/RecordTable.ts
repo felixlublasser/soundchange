@@ -7,7 +7,6 @@ export default class RecordTable<RecordInterfaceNew> {
   private primaryIndex: { [id: string]: SCRecord<RecordInterfaceNew> } = {}
 
   constructor(recordTemplates: RecordInterface<RecordInterfaceNew>[]) {
-    // this.records = records.map(record => new SCRecord<RecordInterfaceNew>(record, this))
     recordTemplates.forEach(template => {
       const newRecord = new SCRecord<RecordInterfaceNew>(template, this)
       this.primaryIndex[newRecord.id] = newRecord
@@ -18,6 +17,10 @@ export default class RecordTable<RecordInterfaceNew> {
     const record = this.primaryIndex[id]
     if (!record) { return new Error('Record not found') }
     return record.copy()
+  }
+
+  get all(): SCRecord<RecordInterfaceNew>[] {
+    return this.where(() => true)
   }
 
   where(

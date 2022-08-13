@@ -6,7 +6,9 @@
     }" class="tree" @select="select"/>
     <Inspector
       :languageStage="selectedLanguageStage"
+      :projectId="project.id"
       @updateLanguageStage="updateLanguageStage"
+      ref="inspector"
       class="inspector"
     />
   </div>
@@ -25,14 +27,25 @@ import { isError } from '@/lib/result'
 export default class ProjectView extends Vue {
   @Prop({ type: Project, required: true }) project!: Project
   
-  selectedLanguageStage: LanguageStage | null = null
+  xxSelectedLanguageStage: LanguageStage | null = null
+
+  get selectedLanguageStage (): LanguageStage | null {
+    return this.xxSelectedLanguageStage
+  }
+
+  set selectedLanguageStage (languageStage: LanguageStage | null) {
+    this.xxSelectedLanguageStage = languageStage
+    const inspector = this.$refs.inspector as Inspector
+    this.$nextTick(() => inspector.update())
+  }
 
   async select(lsId: string): Promise<void> {
-    console.log('gasvaersdlfn')
+    if (this.selectedLanguageStage && lsId === this.selectedLanguageStage.id) {
+      return
+    }
     const ls = await endpoints.getLanguageStage({ projectId: this.project.id, id: lsId })
-    console.log('got ls', JSON.stringify(ls))
     if (isError(ls)) { return }
-    console.log(JSON.stringify(ls))
+    console.log('getting language stage', JSON.stringify(ls))
     this.selectedLanguageStage = new LanguageStage(ls)
   }
 
@@ -44,8 +57,8 @@ export default class ProjectView extends Vue {
       params: this.selectedLanguageStage.dataChanged,
     })
     if (isError(updatedLanguageStage)) { return }
-    // console.log(JSON.stringify(updatedLanguageStage))
     this.selectedLanguageStage = new LanguageStage(updatedLanguageStage)
+    this.$emit('updateProject')
   }
 }
 </script>

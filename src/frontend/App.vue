@@ -3,10 +3,11 @@
     <ContextMenu />
     <component
       :is="currentView"
-      v-bind="{ project }"
+      :project="activeProject"
       @navigateTo="navigateTo"
       @loadRecentProject="loadProject"
       @createNewProject="createNewProject"
+      @updateProject="updateOpenProject(activeProjectId)"
     />
   </div>
 </template>
@@ -17,9 +18,10 @@ import HomeView from '@/frontend/views/Home.vue';
 import ProjectView from '@/frontend/views/Project.vue';
 import AppView from '@/frontend/types/AppView';
 import Project from '@/frontend/models/Project';
-import { isSuccess } from '@/lib/result';
+import { isSuccess, succeedOrThrow } from '@/lib/result';
 import ContextMenu from '@/frontend/components/ContextMenu.vue'
 import endpoints from '@/frontend/lib/endpoints'
+import { ipcRenderer } from 'electron';
 
 @Component({
   components: {
@@ -30,7 +32,8 @@ import endpoints from '@/frontend/lib/endpoints'
 })
 export default class App extends Vue {
   currentView: AppView = AppView.HOME
-  project: Project | null = null
+  openProjects: { [index: string]: Project } = {}
+  activeProjectId: string | null = null
 
   created(): void {
     // this.createNewProject()
@@ -39,14 +42,24 @@ export default class App extends Vue {
     //   ipcRenderer.send('addToRecentProjects', project.filePath)
     // })
 
-    // ipcRenderer.on('getProjectDataToSave', () => {
-    //   this.saveProject()
-    // })
+    ipcRenderer.on('save', () => {
+      this.saveProject()
+    })
 
     // ipcRenderer.on('getProjectDataToSaveAs', (_event, filePath) => {
     //   this.project.filePath = filePath
     //   this.saveProject()
     // })
+  }
+
+  // get firstProject(): Project | undefined {
+  //   return this.openProjects[Object.keys(this.openProjects)[0]]
+  // }
+
+  get activeProject (): Project | null {
+    return this.activeProjectId
+      ? this.openProjects[this.activeProjectId]
+      : null
   }
 
   async createNewProject(): Promise<void> {
@@ -60,6 +73,13 @@ export default class App extends Vue {
     this.currentView = view
   }
 
+  async updateOpenProject(projectId: string): Promise<void> {
+    const project = await endpoints.getProject({ id: projectId })
+    if (isSuccess(project)) {
+      this.mountProject(new Project(project))
+    }
+  }
+
   async loadProject(filePath: string): Promise<void> {
     const project = await endpoints.openProject({ filePath })
     if (isSuccess(project)) {
@@ -68,17 +88,22 @@ export default class App extends Vue {
   }
 
   mountProject(project: Project): void {
-    this.project = project
+    this.$set(this.openProjects, project.id, project)
+    this.activeProjectId = project.id
     this.navigateTo(AppView.PROJECT)
   }
 
-  saveProject(): void {
-    // TODO: fix
-    // if (!this.project.filePath) {
-    //   throw new Error('A project without a file path cannot be saved')
-    // } else {
-    //   ipcRenderer.send('saveProject', Store.fromProject(this.project), this.project.filePath)
-    // }
+  async saveProject(): Promise<void> {
+    if (!this.activeProject || !this.activeProjectId) {
+      return
+    }
+    if (!this.activeProject.filePath) {
+      throw new Error('A project without a file path cannot be saved.')
+    }
+    const project = succeedOrThrow(
+      await endpoints.saveProject({ id: this.activeProjectId })
+    )
+    this.mountProject(new Project(project))
   }
 }
 </script>

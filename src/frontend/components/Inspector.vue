@@ -6,15 +6,17 @@
       </div>
 
       <div class="divided">
-        <!-- <div class="half words">
-          <h2>Words</h2>
-          <input v-model="newWordRoman" />
-          <button @click="createWord" :disabled="newWordIsEmpty">Create Word</button>
-          <p v-for="(word, i) in sortedWords" :key="'nw' + i">{{ word.shortHistory }}</p>
-        </div> -->
+        <div class="half words">
+          <h2>Lexicon</h2>
+          <!-- <input v-model="newWordRoman" /> -->
+          <!-- <button @click="createWord" :disabled="newWordIsEmpty">Create Word</button> -->
+          <p v-for="(word, i) in sortedWords" :key="`${word.roman}${i}`">
+            <strong>{{ word.roman }}</strong> > {{ word.shortHistoryFormatted }}
+          </p>
+        </div>
 
-        <!-- <div class="half sound-changes">
-          <h2>Sound Changes</h2>
+        <div class="half sound-changes">
+          <!-- <h2>Sound Changes</h2>
           <input
             v-for="(key, i) in Object.keys(newSoundChange)"
             v-model="newSoundChange[key]"
@@ -24,8 +26,8 @@
           <button @click="createSoundChange" :disabled="!newSoundChangeIsValid">Create Sound Change</button>
           <p v-for="(soundChange, i) in languageStage.soundChanges" :key="'nsc' + i">
             {{ soundChange.contextBefore }} | {{ soundChange.replace }} > {{ soundChange.replaceWith }} | {{ soundChange.contextAfter }}
-          </p>
-        </div> -->
+          </p> -->
+        </div>
       </div>
     </template>
   </div>
@@ -34,12 +36,17 @@
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import LanguageStage from '@/frontend/models/LanguageStage';
-// import Word from '@/frontend/types/Word';
-// import { compare } from '@/lib/helpers';
+import WordStage from '@/frontend/models/WordStage';
+import { compare } from '@/lib/helpers';
+import endpoints from '../lib/endpoints';
+import { succeedOrThrow } from '@/lib/result';
 
 @Component({})
 export default class Inspector extends Vue {
   @Prop({ type: LanguageStage, default: null }) languageStage!: LanguageStage | null
+  @Prop({ type: String, required: true }) projectId!: string
+
+  words: WordStage[] = []
 
   get name(): string | null {
     return this.languageStage ? this.languageStage.name : null
@@ -52,6 +59,18 @@ export default class Inspector extends Vue {
 
   updateLanguageStage(): void {
     this.$emit('updateLanguageStage')
+  }
+
+  update(): void {
+    this.getWords()
+  }
+
+  async getWords(): Promise<void> {
+    if (!this.languageStage) { return }
+    const wordsResult = await endpoints.getWordsForLanguageStage(
+      { projectId: this.projectId, id: this.languageStage.id }
+    )
+    this.words = succeedOrThrow(wordsResult).map(result => new WordStage(result))
   }
 
   // newWordRoman = '';
@@ -91,10 +110,10 @@ export default class Inspector extends Vue {
     // this.resetNewSoundChange()
   // }
 
-  // get sortedWords(): Word[] {
-  //   if (this.languageStage === null) return []
-  //   return this.languageStage.allWords.sort(compare(word => word.roman))
-  // }
+  get sortedWords(): WordStage[] {
+    if (this.languageStage === null) return []
+    return this.words.sort(compare(word => word.roman))
+  }
 }
 </script>
 

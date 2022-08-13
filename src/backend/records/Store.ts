@@ -7,8 +7,9 @@ import {
 import RecordTable from '@/backend/records/RecordTable'
 import RecordInterface from './types'
 import StoreSchema from '@/backend/schemas/store'
-import { JTDDataType } from 'ajv/dist/jtd'
+import Ajv, { JTDDataType } from 'ajv/dist/jtd'
 import { isSuccess } from '@/lib/result'
+import { Result } from '@/lib/Result'
 
 interface IStore {
   version: string
@@ -75,14 +76,20 @@ export default class Store {
     return StoreSchema
   }
 
-  // static fromProject(project: Project): Store {
-  //   const store = new Store({
-  //     version: project.version,
-  //     protoLanguageId: project.protoLanguage.id,
-  //     _languageStages: project.allLanguageStages.map((ls: LanguageStage) => ls.toRecord),
-  //     _originalWords: project.allOriginalWords.map(w => w.toRecord),
-  //     _soundChanges: project.allSoundChanges.map(sc => sc.toRecord)
-  //   })
-  //   return store
-  // }
+  get toJSON(): Result<JTDDataType<typeof StoreSchema>> {
+    const ajv = new Ajv
+    const validate = ajv.compile<JTDDataType<typeof StoreSchema>>(
+      Store.schema
+    )
+    const json = {
+      version: this.version,
+      protoLanguageId: this.protoLanguageId,
+      languageStages: this.languageStages.all.map(r => r.record),
+      originalWords: this.originalWords.all.map(r => r.record),
+      soundChanges: this.soundChanges.all.map(r => r.record),
+    }
+    return validate(json)
+      ? json
+      : new Error(`Could not serialize. Store failed validation: ${JSON.stringify(validate.errors)}`)
+  }
 }

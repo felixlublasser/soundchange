@@ -1,7 +1,7 @@
 import LanguageStageInterface from '@/interface/interfaces/LanguageStage'
 import LanguageStageUpdateInterface from '@/interface/interfaces/LanguageStageUpdate'
 import LanguageStageSummary from './LanguageStageSummary'
-import OriginalWord from './OriginalWord'
+// import OriginalWord from './OriginalWord'
 
 export default class LanguageStage {
   private data: LanguageStageInterface
@@ -27,9 +27,9 @@ export default class LanguageStage {
     return this.data.branches.map(branch => new LanguageStageSummary(branch))
   }
 
-  get originalWords(): OriginalWord[] {
-    return this.data.originalWords.map(word => new OriginalWord(word))
-  }
+  // get originalWords(): OriginalWord[] {
+  //   return this.data.originalWords.map(word => new OriginalWord(word))
+  // }
 
   get dataChanged(): LanguageStageUpdateInterface {
     return this._dataChanged

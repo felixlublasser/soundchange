@@ -21,7 +21,6 @@ export default class Tree extends Vue {
   @Prop({ type: String, default: null }) selectedLanguageStageId!: string | null
 
   select(languageStageId: string): void {
-    console.log('about to select')
     this.$emit('select', languageStageId)
   }
 }

@@ -1,20 +1,20 @@
-import OriginalWordInterface from '@/interface/interfaces/OriginalWord'
+// import OriginalWordInterface from '@/interface/interfaces/OriginalWord'
 
-export default class OriginalWord {
-  private data: OriginalWordInterface
+// export default class OriginalWord {
+//   private data: OriginalWordInterface
 
-  constructor(data: OriginalWordInterface) {
-    this.data = data
-  }
+//   constructor(data: OriginalWordInterface) {
+//     this.data = data
+//   }
 
-  get id(): string {
-    return this.data.id
-  }
+//   get id(): string {
+//     return this.data.id
+//   }
 
-  get roman(): string {
-    return this.data.roman
-  }
-}
+//   get roman(): string {
+//     return this.data.roman
+//   }
+// }
 
 //   get base(): BaseWord {
 //     return new BaseWord(this)

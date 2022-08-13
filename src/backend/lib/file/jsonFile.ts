@@ -1,5 +1,5 @@
 import File from '@/backend/lib/file'
-import { succeedOrThrow } from '@/lib/result'
+import { isError, succeedOrThrow } from '@/lib/result'
 import Json from '@/lib/json'
 import Ajv, { JTDDataType } from 'ajv/dist/jtd'
 import { Result } from '@/lib/result'
@@ -30,9 +30,11 @@ export default class JsonFile<T extends Instantiable, Schema> extends File {
     return this._parsedObject as InstanceType<T>
   }
 
-  async saveProject(object: T): Promise<JsonFile<T, Schema>> {
-    this.save(JSON.stringify(object))
-    return this
+  async saveJSON(object: InstanceType<T>): Promise<Result<JsonFile<T, Schema>>> {
+    const json = object.toJSON as Result<JTDDataType<Schema>>
+    if (isError(json)) { return json }
+    const saveResult = await this.save(JSON.stringify(json))
+    return isError(saveResult) ? saveResult : this
   }
 
   async load({ ignoreNotFound = false }: { ignoreNotFound?: boolean} = {}): Promise<Result<JsonFile<T, Schema>>> {

@@ -38,7 +38,7 @@ export const defineMenu = ():void => {
           accelerator: 'Cmd+S',
           click(_menuItem, browserWindow) {
             if (browserWindow && browserWindow.webContents) {
-              browserWindow.webContents.send('getProjectDataToSave')
+              browserWindow.webContents.send('save')
             }
           }
         }

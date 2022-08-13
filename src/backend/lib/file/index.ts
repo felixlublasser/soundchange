@@ -27,8 +27,12 @@ export default class File {
     return this
   }
   
-  async save(raw: string): Promise<File> {
-    writeFile(this.filePath, raw)
+  async save(raw: string): Promise<Result<File>> {
+    try {
+      await writeFile(this.filePath, raw)
+    } catch (e) {
+      return e as FSError
+    }
     return this
   }
 }

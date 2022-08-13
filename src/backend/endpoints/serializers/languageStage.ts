@@ -12,9 +12,9 @@ export default function serializeLanguageStage({ languageStage, store }: {
     record.record.parentLanguageStageId === languageStage.id
   )
 
-  const originalWords = store.originalWords.where((record) =>
-    record.record.languageStageId === languageStage.id
-  )
+  // const originalWords = store.originalWords.where((record) =>
+  //   record.record.languageStageId === languageStage.id
+  // )
 
   const soundChanges = store.soundChanges.where((record) =>
     record.record.languageStageId === languageStage.id
@@ -27,10 +27,10 @@ export default function serializeLanguageStage({ languageStage, store }: {
       id: branch.id,
       name: branch.record.name
     })),
-    originalWords: originalWords.map(ow => ({
-      id: ow.id,
-      roman: ow.record.roman
-    })),
+    // originalWords: originalWords.map(ow => ({
+    //   id: ow.id,
+    //   roman: ow.record.roman
+    // })),
     soundChangeIds: soundChanges.map(sc => sc.record.id),
   }
 }

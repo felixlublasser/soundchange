@@ -3,6 +3,7 @@ import { ipcRenderer } from 'electron';
 import ProjectInterface from '@/interface/interfaces/Project'
 import FileNameInterface from '@/interface/interfaces/FileName'
 import LanguageStageInterface from '@/interface/interfaces/LanguageStage'
+import WordStageInterface from '@/interface/interfaces/WordStage'
 import { Result } from '@/lib/result';
 
 const endpoints: Endpoints = {
@@ -21,6 +22,11 @@ const endpoints: Endpoints = {
       ipcRenderer.invoke('newProject')
     ) as Promise<Result<ProjectInterface>>
   },
+  saveProject: ({ id }) => {
+    return Object.freeze(
+      ipcRenderer.invoke('saveProject', { id })
+    ) as Promise<Result<ProjectInterface>>
+  },
   getRecentProjectFileNames: () => {
     return Object.freeze(
       ipcRenderer.invoke('getRecentProjectFileNames')
@@ -35,6 +41,11 @@ const endpoints: Endpoints = {
     return Object.freeze(
       ipcRenderer.invoke('updateLanguageStage', { projectId, id, params })
     ) as Promise<Result<LanguageStageInterface>>
+  },
+  getWordsForLanguageStage: ({ projectId, id }) => {
+    return Object.freeze(
+      ipcRenderer.invoke('getWordsForLanguageStage', { projectId, id })
+    ) as Promise<Result<WordStageInterface[]>>
   }
 }
 export default endpoints

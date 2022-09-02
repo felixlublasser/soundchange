@@ -10,6 +10,8 @@ import getRecentProjectFileNames from '@/backend/endpoints/getRecentProjectFileN
 import getLanguageStage from '@/backend/endpoints/getLanguageStage'
 import updateLanguageStage from '@/backend/endpoints/updateLanguageStage'
 import getWordsForLanguageStage from '@/backend/endpoints/getWordsForLanguageStage'
+import createWordForLanguageStage from '@/backend/endpoints/createWordForLanguageStage'
+import getSoundChangesForLanguageStage from '@/backend/endpoints/getSoundChangesForLanguageStage'
 import Endpoints from '@/interface/endpoints'
 
 const endpoints: Endpoints = {
@@ -20,7 +22,9 @@ const endpoints: Endpoints = {
   getRecentProjectFileNames,
   getLanguageStage,
   updateLanguageStage,
-  getWordsForLanguageStage
+  getWordsForLanguageStage,
+  createWordForLanguageStage,
+  getSoundChangesForLanguageStage,
 }
 
 export const defineEndpoints = (): void => {
@@ -28,7 +32,10 @@ export const defineEndpoints = (): void => {
     const implementation = endpoints[key]
     ipcMain.handle(
       key,
-      (_, arg) => implementation(arg as any)
+      (_, arg) => {
+        console.log("Request received:", key, JSON.stringify(arg))
+        return implementation(arg as any)
+      }
     )
   }
 

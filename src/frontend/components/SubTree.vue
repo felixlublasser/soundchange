@@ -66,7 +66,7 @@ export default class SubTree extends Vue {
           //TODO
         }
       }
-    ], { top: event.clientY, left: event.clientX })
+    ], { insetBlockStart: event.clientY, insetInlineStart: event.clientX })
   }
 }
 </script>
@@ -80,14 +80,14 @@ export default class SubTree extends Vue {
     background-color: #333;
     border: 1px solid #888;
     display: flex;
-    min-width: 8px;
-    min-height: 8px;
+    min-inline-size: 8px;
+    min-block-size: 8px;
   }
 
   &-wrapper {
     display: flex;
     flex-direction: column;
-    height: min-content;
+    block-size: min-content;
   }
 
   &-branches {

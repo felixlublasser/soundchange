@@ -5,30 +5,18 @@
         <input v-model="name" @blur="updateLanguageStage" class="input-h1"/>
       </div>
 
-      <div class="divided">
-        <div class="half words">
-          <h2>Lexicon</h2>
-          <!-- <input v-model="newWordRoman" /> -->
-          <!-- <button @click="createWord" :disabled="newWordIsEmpty">Create Word</button> -->
-          <p v-for="(word, i) in sortedWords" :key="`${word.roman}${i}`">
-            <strong>{{ word.roman }}</strong> > {{ word.shortHistoryFormatted }}
-          </p>
-        </div>
-
-        <div class="half sound-changes">
-          <!-- <h2>Sound Changes</h2>
-          <input
-            v-for="(key, i) in Object.keys(newSoundChange)"
-            v-model="newSoundChange[key]"
-            :key="'scinput' + i"
-            class="sound-change-input"
-          >
-          <button @click="createSoundChange" :disabled="!newSoundChangeIsValid">Create Sound Change</button>
-          <p v-for="(soundChange, i) in languageStage.soundChanges" :key="'nsc' + i">
-            {{ soundChange.contextBefore }} | {{ soundChange.replace }} > {{ soundChange.replaceWith }} | {{ soundChange.contextAfter }}
-          </p> -->
-        </div>
-      </div>
+      <Tabs
+        :tabs="tabs"
+        :activeTabKey="activeTab"
+        @activateTab="activateTab"
+      >
+        <template #soundChanges>
+          <SoundChanges v-bind="{ soundChanges }"/>
+        </template>
+        <template #lexicon>
+          <Lexicon v-bind="{ words }" @createWord="createWord"/>
+        </template>
+      </Tabs>
     </template>
   </div>
 </template>
@@ -36,17 +24,35 @@
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import LanguageStage from '@/frontend/models/LanguageStage';
-import WordStage from '@/frontend/models/WordStage';
-import { compare } from '@/lib/helpers';
-import endpoints from '../lib/endpoints';
+import Tabs from '@/frontend/components/Tabs.vue'
+import Lexicon from '@/frontend/components/Lexicon.vue'
+import SoundChanges from '@/frontend/components/SoundChanges.vue'
+import endpoints from '@/frontend/lib/endpoints';
 import { succeedOrThrow } from '@/lib/result';
+import WordStage from '@/frontend/models/WordStage';
+import SoundChange from '@/frontend/models/SoundChange';
 
-@Component({})
+export interface UpdatableVue extends Vue {
+  update(): void
+}
+
+type TabKey = 'soundChanges' | 'lexicon'
+
+@Component({ components: { Tabs, Lexicon, SoundChanges } })
 export default class Inspector extends Vue {
   @Prop({ type: LanguageStage, default: null }) languageStage!: LanguageStage | null
   @Prop({ type: String, required: true }) projectId!: string
 
-  words: WordStage[] = []
+  words: WordStage[] | null = null
+  soundChanges: SoundChange[] | null = null
+  activeTab: TabKey = 'soundChanges'
+
+  get tabs(): { key: TabKey, title: string }[] {
+    return [
+      { key: 'soundChanges', title: 'Sound Changes' },
+      { key: 'lexicon', title: 'Lexicon' }
+    ]
+  }
 
   get name(): string | null {
     return this.languageStage ? this.languageStage.name : null
@@ -61,58 +67,49 @@ export default class Inspector extends Vue {
     this.$emit('updateLanguageStage')
   }
 
-  update(): void {
-    this.getWords()
-  }
-
   async getWords(): Promise<void> {
     if (!this.languageStage) { return }
     const wordsResult = await endpoints.getWordsForLanguageStage(
       { projectId: this.projectId, id: this.languageStage.id }
     )
     this.words = succeedOrThrow(wordsResult).map(result => new WordStage(result))
+    console.log()
   }
 
-  // newWordRoman = '';
-  // newSoundChange = {
-  //   contextBefore: '',
-  //   replace: '',
-  //   replaceWith: '',
-  //   contextAfter: ''
-  // }
+  createWord(roman: string): void {
+    console.log('create word', roman)
+    if (!this.languageStage) {
+      return
+    }
+    succeedOrThrow(endpoints.createWordForLanguageStage({
+      projectId: this.projectId,
+      id: this.languageStage.id,
+      word: { roman }
+    }))
+    this.update()
+  }
 
-  // get newWordIsEmpty(): boolean {
-  //   return this.newWordRoman === ''
-  // }
+  async getSoundChanges(): Promise<void> {
+    if (!this.languageStage) { return }
+    const soundChangesResult = await endpoints.getSoundChangesForLanguageStage(
+      { projectId: this.projectId, id: this.languageStage.id }
+    )
+    this.soundChanges = succeedOrThrow(soundChangesResult).map(result => new SoundChange(result))
+  }
 
-  // get newSoundChangeIsValid(): boolean {
-  //   return this.newSoundChange.replace !== ''
-  // }
+  update(): void {
+    this.words = null
+    this.soundChanges = null
+    const func = {
+      lexicon: this.getWords,
+      soundChanges: this.getSoundChanges,
+    }[this.activeTab]
+    func()
+  }
 
-  // resetNewSoundChange(): void {
-  //   this.newSoundChange = {
-  //     contextBefore: '',
-  //     replace: '',
-  //     replaceWith: '',
-  //     contextAfter: ''
-  //   }
-  // }
-
-  // createWord(): void {
-    // if (this.languageStage === null) return
-    // this.languageStage.addOriginalWord({ roman: this.newWordRoman })
-    // this.newWordRoman = ''
-  // }
-
-  // createSoundChange(): void {
-    // if (this.languageStage === null) return
-    // this.languageStage.addSoundChange(this.newSoundChange)
-    // this.resetNewSoundChange()
-  // }
-
-  get sortedWords(): WordStage[] {
-    if (this.languageStage === null) return []
-    return this.words.sort(compare(word => word.roman))
+  activateTab(key: TabKey): void {
+    this.activeTab = key
+    this.update()
   }
 }
 </script>
@@ -125,8 +122,7 @@ export default class Inspector extends Vue {
 }
 
 .header {
-  width: 100%;
-  border-bottom: 1px solid #000;
+  inline-size: 100%;
   padding: 16px;
 }
 
@@ -143,7 +139,7 @@ export default class Inspector extends Vue {
 
 .words {
   flex-grow: 1;
-  border-right: 1px solid #000;
+  border-inline-end: 1px solid #000;
 }
 
 .sound-changes {
@@ -151,7 +147,7 @@ export default class Inspector extends Vue {
 }
 
 .sound-change-input {
-  width: 70px;
+  inline-size: 70px;
 }
 
 .divided {

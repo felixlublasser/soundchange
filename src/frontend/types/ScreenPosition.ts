@@ -1,4 +1,4 @@
 export default interface ScreenPosition {
-  top: number;
-  left: number;
+  insetBlockStart: number;
+  insetInlineStart: number;
 }

@@ -6,7 +6,7 @@
   >
     <div
       class="context-menu-main"
-      :style="`top:${position.top}px;left:${position.left}px;`"
+      :style="`inset-block-start:${position.insetBlockStart}px;inset-inline-start:${position.insetInlineStart}px;`"
     >
       <div
         v-for="(menuItem, i) in menuItems"
@@ -65,8 +65,8 @@ export default class ContextMenu extends Vue {
 <style lang="scss">
 .overlay {
   position: absolute;
-  top: 0;
-  left: 0;
+  inset-inline-start: 0;
+  inset-block-start: 0;
   width: 100vw;
   height: 100vh;
   background-color: transparent;
@@ -84,7 +84,7 @@ export default class ContextMenu extends Vue {
   padding: 4px;
   
   &:not(:last-child) {
-    border-bottom: 1px solid #888;
+    border-block-end: 1px solid #888;
   }
 
   &:hover {

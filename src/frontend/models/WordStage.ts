@@ -12,6 +12,6 @@ export default class Word {
   }
   
   get shortHistoryFormatted(): string {
-    return this.data.shortHistory.map(stage => stage.roman).slice(1).join(' > ')
+    return this.data.shortHistory.map(stage => stage.roman).reverse().slice(1).join(' < ')
   }
 }

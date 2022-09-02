@@ -110,7 +110,7 @@ export default class App extends Vue {
 
 <style lang="scss">
 html, body {
-  height: 100%;
+  block-size: 100%;
   margin: 0;
 }
 
@@ -123,7 +123,7 @@ html, body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #111;
-  height: 100%;
+  block-size: 100%;
   color: #eee;
 }
 </style>

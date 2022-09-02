@@ -45,7 +45,6 @@ export default class ProjectView extends Vue {
     }
     const ls = await endpoints.getLanguageStage({ projectId: this.project.id, id: lsId })
     if (isError(ls)) { return }
-    console.log('getting language stage', JSON.stringify(ls))
     this.selectedLanguageStage = new LanguageStage(ls)
   }
 
@@ -66,14 +65,14 @@ export default class ProjectView extends Vue {
 <style lang="scss" scoped>
 .project-main {
   display: flex;
-  height: 100%;
+  block-size: 100%;
 }
 
 .tree {
-  width: 25%;
+  inline-size: 25%;
 }
 
 .inspector {
-  width: 75%;
+  inline-size: 75%;
 }
 </style>

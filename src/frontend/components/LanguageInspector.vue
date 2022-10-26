@@ -11,10 +11,16 @@
         @activateTab="activateTab"
       >
         <template #soundChanges>
-          <SoundChanges v-bind="{ soundChanges }"/>
+          <SoundChanges
+            v-bind="{ soundChanges }"
+            @createSoundChange="createSoundChange"
+          />
         </template>
         <template #lexicon>
-          <Lexicon v-bind="{ words }" @createWord="createWord"/>
+          <Lexicon
+            v-bind="{ words }"
+            @createWord="createWord"
+          />
         </template>
       </Tabs>
     </template>
@@ -31,6 +37,7 @@ import endpoints from '@/frontend/lib/endpoints';
 import { succeedOrThrow } from '@/lib/result';
 import WordStage from '@/frontend/models/WordStage';
 import SoundChange from '@/frontend/models/SoundChange';
+import SoundChangeCreateInterface from '@/interface/interfaces/SoundChangeCreate';
 
 export interface UpdatableVue extends Vue {
   update(): void
@@ -39,7 +46,7 @@ export interface UpdatableVue extends Vue {
 type TabKey = 'soundChanges' | 'lexicon'
 
 @Component({ components: { Tabs, Lexicon, SoundChanges } })
-export default class Inspector extends Vue {
+export default class LanguageInspector extends Vue {
   @Prop({ type: LanguageStage, default: null }) languageStage!: LanguageStage | null
   @Prop({ type: String, required: true }) projectId!: string
 
@@ -73,11 +80,9 @@ export default class Inspector extends Vue {
       { projectId: this.projectId, id: this.languageStage.id }
     )
     this.words = succeedOrThrow(wordsResult).map(result => new WordStage(result))
-    console.log()
   }
 
   createWord(roman: string): void {
-    console.log('create word', roman)
     if (!this.languageStage) {
       return
     }
@@ -85,6 +90,18 @@ export default class Inspector extends Vue {
       projectId: this.projectId,
       id: this.languageStage.id,
       word: { roman }
+    }))
+    this.update()
+  }
+
+  createSoundChange(soundChange: SoundChangeCreateInterface): void {
+    if (!this.languageStage) {
+      return
+    }
+    succeedOrThrow(endpoints.createSoundChangeForLanguageStage({
+      projectId: this.projectId,
+      id: this.languageStage.id,
+      soundChange,
     }))
     this.update()
   }

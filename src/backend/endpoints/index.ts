@@ -12,6 +12,7 @@ import updateLanguageStage from '@/backend/endpoints/updateLanguageStage'
 import getWordsForLanguageStage from '@/backend/endpoints/getWordsForLanguageStage'
 import createWordForLanguageStage from '@/backend/endpoints/createWordForLanguageStage'
 import getSoundChangesForLanguageStage from '@/backend/endpoints/getSoundChangesForLanguageStage'
+import createSoundChangeForLanguageStage from '@/backend/endpoints/createSoundChangeForLanguageStage'
 import Endpoints from '@/interface/endpoints'
 
 const endpoints: Endpoints = {
@@ -25,6 +26,7 @@ const endpoints: Endpoints = {
   getWordsForLanguageStage,
   createWordForLanguageStage,
   getSoundChangesForLanguageStage,
+  createSoundChangeForLanguageStage,
 }
 
 export const defineEndpoints = (): void => {

@@ -1,6 +1,7 @@
 import Endpoints from '@/interface/endpoints'
 import { ipcRenderer } from 'electron';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function endpoint<T extends (...args: any) => any>(
   key: keyof Endpoints
 ): (...args: Parameters<T>) => Promise<ReturnType<T>> {
@@ -24,6 +25,7 @@ const endpoints: Endpoints = {
   getWordsForLanguageStage: endpoint('getWordsForLanguageStage'),
   createWordForLanguageStage: endpoint('createWordForLanguageStage'),
   getSoundChangesForLanguageStage: endpoint('getSoundChangesForLanguageStage'),
+  createSoundChangeForLanguageStage: endpoint('createSoundChangeForLanguageStage'),
 }
   export default endpoints
 

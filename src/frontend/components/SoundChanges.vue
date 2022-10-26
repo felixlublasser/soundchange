@@ -1,28 +1,43 @@
 <template>
   <div class="main">
     <h2>Sound Changes</h2>
-    <!-- <input
-      v-for="(key, i) in Object.keys(newSoundChange)"
-      v-model="newSoundChange[key]"
-      :key="'scinput' + i"
-      class="sound-change-input"
-    >
-    <button @click="createSoundChange" :disabled="!newSoundChangeIsValid">Create Sound Change</button> -->
+    <button @click="createNewSoundChange">New Sound Change</button>
     <ul v-if="soundChanges">
-      <li v-for="(soundChange, i) in soundChanges" :key="'nsc' + i">
-        {{ soundChange.contextBefore }} | {{ soundChange.replace }} > {{ soundChange.replaceWith }} | {{ soundChange.contextAfter }}
+      <li v-for="(sc, i) in soundChanges" :key="'nsc' + i">
+        {{ sc.contextBefore }} | {{ sc.replace }} > {{ sc.replaceWith }} | {{ sc.contextAfter }}
       </li>
     </ul>
+
+    <NewSoundChangeDialog
+      :isOpen="isNewSoundChangeDialogOpen"
+      :resolver="newSoundChangeResolver"
+    />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import SoundChange from '@/frontend/models/SoundChange';
+import NewSoundChangeDialog from '@/frontend/components/NewSoundChangeDialog.vue'
 
-@Component
+@Component({ components: { NewSoundChangeDialog } })
 export default class SoundChanges extends Vue {
   @Prop({ type: Array, default: null }) soundChanges!: SoundChange[] | null
+
+  isNewSoundChangeDialogOpen = false
+  newSoundChangeResolver: (value: unknown) => void = () => {
+    // empty function
+  }
+
+  async createNewSoundChange(): Promise<void> {
+    this.isNewSoundChangeDialogOpen = true
+    const newSoundChange = await new Promise(resolve => {
+      this.newSoundChangeResolver = resolve
+    })
+    this.isNewSoundChangeDialogOpen = false
+    if (!newSoundChange) { return }
+    this.$emit('createSoundChange', newSoundChange)
+  }
 
   // newSoundChange = {
   //   contextBefore: '',

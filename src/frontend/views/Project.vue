@@ -18,7 +18,7 @@
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import Project from '@/frontend/models/Project'
 import LanguageStage from '@/frontend/models/LanguageStage'
-import Inspector from '@/frontend/components/Inspector.vue'
+import Inspector from '@/frontend/components/LanguageInspector.vue'
 import Tree from '@/frontend/components/Tree.vue'
 import endpoints from '@/frontend/lib/endpoints'
 import { isError } from '@/lib/result'

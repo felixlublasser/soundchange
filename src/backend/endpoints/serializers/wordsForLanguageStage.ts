@@ -29,7 +29,7 @@ export default function serializeWordsForLanguageStage (
     const soundChanges = store.soundChanges.where(({ record }) =>
       record.languageStageId === ls.id
     )
-    // TODO: sort soundchanges by index?
+    // TODO: sort sound changes by index?
     wordList.forEach(word => {
       soundChanges.forEach(soundChange => {
         const newRoman = applySoundChange({ soundChange, roman: word.roman })

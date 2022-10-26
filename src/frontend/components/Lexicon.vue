@@ -36,6 +36,7 @@ export default class Lexicon extends Vue {
       this.newWordResolver = resolve
     })
     this.isNewWordDialogOpen = false
+    if (!newWord) { return }
     this.$emit('createWord', newWord)
   }
 }

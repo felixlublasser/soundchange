@@ -34,7 +34,7 @@
     "src/**/*.vue",
     "tests/**/*.ts",
     "tests/**/*.tsx",
-    "src/lib/uuid.js",
+    "tests/**/*.js",
   ],
   "exclude": [
     "node_modules"

@@ -29,6 +29,14 @@ export type CreateWordForLanguageStage = (
   { projectId, id, word }:
   { projectId: string, id: string, word: WordStageCreateInterface }
 ) => Promise<Result<WordStageInterface>>
+export type UpdateOriginalWord = (
+  { projectId, id, params }:
+  { projectId: string, id: string, params: WordStageCreateInterface }
+) => Promise<Result<WordStageInterface>>
+export type DeleteOriginalWord = (
+  { projectId, id }:
+  { projectId: string, id: string }
+) => Promise<Result<void>>
 export type GetSoundChangesForLanguageStage = (
   { projectId, id }:
   { projectId: string, id: string }
@@ -37,6 +45,14 @@ export type CreateSoundChangeForLanguageStage = (
   { projectId, id, soundChange }:
   { projectId: string, id: string, soundChange: SoundChangeCreateInterface }
 ) => Promise<Result<SoundChangeInterface>>
+export type UpdateSoundChange = (
+  { projectId, id, params }:
+  { projectId: string, id: string, params: SoundChangeCreateInterface }
+) => Promise<Result<SoundChangeInterface>>
+export type DeleteSoundChange = (
+  { projectId, id }:
+  { projectId: string, id: string }
+) => Promise<Result<void>>
 
 export default interface Endpoints {
   getProject: GetProject
@@ -48,6 +64,10 @@ export default interface Endpoints {
   updateLanguageStage: UpdateLanguageStage
   getWordsForLanguageStage: GetWordsForLanguageStage
   createWordForLanguageStage: CreateWordForLanguageStage
+  updateOriginalWord: UpdateOriginalWord
+  deleteOriginalWord: DeleteOriginalWord
   getSoundChangesForLanguageStage: GetSoundChangesForLanguageStage
   createSoundChangeForLanguageStage: CreateSoundChangeForLanguageStage
+  updateSoundChange: UpdateSoundChange
+  deleteSoundChange: DeleteSoundChange
 }

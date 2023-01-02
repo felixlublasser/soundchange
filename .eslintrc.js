@@ -19,11 +19,17 @@ module.exports = {
     {
       files: [
         '**/__tests__/*.{j,t}s?(x)',
-        '**/tests/unit/**/*.spec.{j,t}s?(x)'
+        '**/*.spec.{j,t}s?(x)'
       ],
       env: {
         jest: true
-      }
+      },
+      globals: {
+        subject: true,
+        $subject: true,
+        def: true,
+        context: true,
+      },
     }
   ]
 }

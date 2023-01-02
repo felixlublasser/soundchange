@@ -24,8 +24,12 @@ const endpoints: Endpoints = {
   updateLanguageStage: endpoint('updateLanguageStage'),
   getWordsForLanguageStage: endpoint('getWordsForLanguageStage'),
   createWordForLanguageStage: endpoint('createWordForLanguageStage'),
+  updateOriginalWord: endpoint('updateOriginalWord'),
+  deleteOriginalWord: endpoint('deleteOriginalWord'),
   getSoundChangesForLanguageStage: endpoint('getSoundChangesForLanguageStage'),
   createSoundChangeForLanguageStage: endpoint('createSoundChangeForLanguageStage'),
+  updateSoundChange: endpoint('updateSoundChange'),
+  deleteSoundChange: endpoint('deleteSoundChange'),
 }
-  export default endpoints
 
+export default endpoints

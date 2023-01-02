@@ -13,13 +13,13 @@
         <template #soundChanges>
           <SoundChanges
             v-bind="{ soundChanges }"
-            @createSoundChange="createSoundChange"
+            v-on="{ createSoundChange, updateSoundChange, deleteSoundChange }"
           />
         </template>
         <template #lexicon>
           <Lexicon
             v-bind="{ words }"
-            @createWord="createWord"
+            v-on="{ createWord, updateWord, deleteWord }"
           />
         </template>
       </Tabs>
@@ -38,6 +38,7 @@ import { succeedOrThrow } from '@/lib/result';
 import WordStage from '@/frontend/models/WordStage';
 import SoundChange from '@/frontend/models/SoundChange';
 import SoundChangeCreateInterface from '@/interface/interfaces/SoundChangeCreate';
+import WordStageCreateInterface from '@/interface/interfaces/WordStageCreate';
 
 export interface UpdatableVue extends Vue {
   update(): void
@@ -82,14 +83,31 @@ export default class LanguageInspector extends Vue {
     this.words = succeedOrThrow(wordsResult).map(result => new WordStage(result))
   }
 
-  createWord(roman: string): void {
+  createWord(word: WordStageCreateInterface): void {
     if (!this.languageStage) {
       return
     }
     succeedOrThrow(endpoints.createWordForLanguageStage({
       projectId: this.projectId,
       id: this.languageStage.id,
-      word: { roman }
+      word
+    }))
+    this.update()
+  }
+  
+  updateWord(id: string, params: WordStageCreateInterface): void {
+    succeedOrThrow(endpoints.updateOriginalWord({
+      projectId: this.projectId,
+      id,
+      params
+    }))
+    this.update()
+  }
+
+  deleteWord(id: string): void {
+    succeedOrThrow(endpoints.deleteOriginalWord({
+      projectId: this.projectId,
+      id,
     }))
     this.update()
   }
@@ -102,6 +120,23 @@ export default class LanguageInspector extends Vue {
       projectId: this.projectId,
       id: this.languageStage.id,
       soundChange,
+    }))
+    this.update()
+  }
+
+  updateSoundChange(id: string, params: SoundChangeCreateInterface): void {
+    succeedOrThrow(endpoints.updateSoundChange({
+      projectId: this.projectId,
+      id,
+      params,
+    }))
+    this.update()
+  }
+
+  deleteSoundChange(id: string): void {
+    succeedOrThrow(endpoints.deleteSoundChange({
+      projectId: this.projectId,
+      id,
     }))
     this.update()
   }

@@ -54,4 +54,9 @@ export default class RecordTable<RecordInterfaceNew> {
     this.primaryIndex[newId] = newRecord
     return newRecord.copy()
   }
-}
+
+  delete(record: SCRecord<RecordInterfaceNew>): Result<void> {
+    // TODO: prevent FK dangling
+    delete this.primaryIndex[record.id]
+  }
+ }

@@ -1,5 +1,5 @@
-import SCRecord from "../records/SCRecord"
-import { ISoundChangeRecord } from "../records/tables"
+import SCRecord from "@/backend/records/SCRecord"
+import { ISoundChangeRecord } from "@/backend/records/tables"
 
 export function applySoundChange (
   { soundChange, roman }:{ soundChange: SCRecord<ISoundChangeRecord>, roman: string }

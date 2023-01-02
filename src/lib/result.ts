@@ -28,3 +28,7 @@ export function collectify<T>(results: Result<T>[]): Result<T[]> {
   const potentialError = results.find(isError)
   return potentialError ? potentialError : results as Result<T[]>
 }
+
+export function errorOrExec<T, U>(result: Result<T>, func: (t: T) => U): Error | U {
+  return isError(result) ? result : func(result)
+}

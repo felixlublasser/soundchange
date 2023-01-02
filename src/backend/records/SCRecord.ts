@@ -24,6 +24,10 @@ export default class SCRecord<RecordInterfaceNew> {
     return this.save()
   }
 
+  delete(): Result<void> {
+    return this.tableRef.delete(this)
+  }
+
   get record(): RecordInterface<RecordInterfaceNew> {
     return this._record
   }

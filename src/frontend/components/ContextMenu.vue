@@ -6,13 +6,14 @@
   >
     <div
       class="context-menu-main"
-      :style="`inset-block-start:${position.insetBlockStart}px;inset-inline-start:${position.insetInlineStart}px;`"
+      :style="`inset-block-start:${position.insetBlockStart + 1}px;inset-inline-start:${position.insetInlineStart + 1}px;`"
     >
       <div
         v-for="(menuItem, i) in menuItems"
         :key="i"
         @click.stop="callMenuItem(menuItem)"
         class="menu-item"
+        :class="menuItem.disabled ? 'menu-item--disabled': 'menu-item--enabled'"
       >
         {{ menuItem.label }}
       </div>
@@ -26,8 +27,9 @@ import EventBus from '@/lib/EventBus'
 import ScreenPosition from '@/frontend/types/ScreenPosition';
 
 interface MenuItem {
-  name: string;
+  label: string;
   onClick(): void;
+  disabled: boolean;
 }
 
 @Component
@@ -52,10 +54,11 @@ export default class ContextMenu extends Vue {
 
   close(): void {
     this.menuItems = null
-      this.position = null
+    this.position = null
   }
 
   callMenuItem(menuItem: MenuItem): void {
+    if (menuItem.disabled) { return }
     menuItem.onClick()
     this.close()
   }
@@ -87,9 +90,13 @@ export default class ContextMenu extends Vue {
     border-block-end: 1px solid #888;
   }
 
-  &:hover {
+  &--enabled:hover {
     background-color: #aaa;
     color: black;
+  }
+
+  &--disabled {
+    color: #aaa
   }
 }
 </style>

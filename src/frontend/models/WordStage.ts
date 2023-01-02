@@ -1,10 +1,18 @@
 import WordStageInterface from '@/interface/interfaces/WordStage'
 
-export default class Word {
+export default class WordStage {
   private data: WordStageInterface
 
   constructor(data: WordStageInterface) {
     this.data = data
+  }
+
+  get isInherited(): boolean {
+    return this.data.inherited
+  }
+
+  get originalWordId(): string {
+    return this.data.originalWordId
   }
 
   get roman(): string {
